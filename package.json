@@ -10,13 +10,13 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:file-tag.createTag"
+    "onCommand:extension.createTag"
   ],
   "main": "./extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "file-tag.createTag",
+        "command": "extension.createTag",
         "title": "File Tag: Create Tag"
       }
     ]
