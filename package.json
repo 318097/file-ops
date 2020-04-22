@@ -12,7 +12,7 @@
   "activationEvents": [
     "onCommand:extension.createTag"
   ],
-  "main": "./extension.js",
+  "main": "./src/extension.js",
   "contributes": {
     "commands": [
       {
