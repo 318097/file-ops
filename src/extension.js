@@ -104,7 +104,43 @@ function activate(context) {
     }
   );
 
-  context.subscriptions.push(createTag, listTags, currentTag, deleteTags);
+  const renameTag = vscode.commands.registerCommand(
+    "extension.renameTag",
+    async () => {
+      try {
+        const fileTag = new FileTag();
+        const meta = Object.entries(fileTag.meta);
+        const list = meta.map(([path, tag], index) => `${index + 1}. ${tag}`);
+
+        const selected = await vscode.window.showQuickPick(list, {
+          placeHolder: "Select tag to rename",
+        });
+
+        if (!selected) return;
+
+        const newTag = await vscode.window.showInputBox({
+          placeHolder: "Enter new tag:",
+        });
+
+        const selectedIndex = Number(selected.split(".")[0]) - 1;
+        const [path] = meta[selectedIndex];
+        fileTag.meta[path] = newTag;
+        fileTag.save();
+
+        vscode.window.showInformationMessage(`File Tag: Tag renamed.`);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  );
+
+  context.subscriptions.push(
+    createTag,
+    listTags,
+    currentTag,
+    deleteTags,
+    renameTag
+  );
 }
 exports.activate = activate;
 

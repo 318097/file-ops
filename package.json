@@ -13,7 +13,8 @@
     "onCommand:extension.createTag",
     "onCommand:extension.listTags",
     "onCommand:extension.currentTag",
-    "onCommand:extension.deleteTags"
+    "onCommand:extension.deleteTags",
+    "onCommand:extension.renameTag"
   ],
   "main": "./src/extension.js",
   "contributes": {
@@ -33,6 +34,10 @@
       {
         "command": "extension.deleteTags",
         "title": "File Tag: Delete tags"
+      },
+      {
+        "command": "extension.renameTag",
+        "title": "File Tag: Rename tag"
       }
     ]
   },
