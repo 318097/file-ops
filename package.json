@@ -11,7 +11,8 @@
   ],
   "activationEvents": [
     "onCommand:extension.createTag",
-    "onCommand:extension.listTags"
+    "onCommand:extension.listTags",
+    "onCommand:extension.currentTag"
   ],
   "main": "./src/extension.js",
   "contributes": {
@@ -23,6 +24,10 @@
       {
         "command": "extension.listTags",
         "title": "File Tag: List Tags"
+      },
+      {
+        "command": "extension.currentTag",
+        "title": "File Tag: Current File tag"
       }
     ]
   },

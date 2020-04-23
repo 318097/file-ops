@@ -1,6 +1,12 @@
 const vscode = require("vscode");
 const FileTag = require("./util");
 
+const getCurrentFilePath = () => {
+  const activeTE = vscode.window.activeTextEditor;
+  const filePath = activeTE["_documentData"]["_uri"]["path"];
+  return filePath;
+};
+
 /**
  * @param {vscode.ExtensionContext} context
  */
@@ -14,9 +20,9 @@ function activate(context) {
         const fileDescription = await vscode.window.showInputBox({
           placeHolder: "Enter description",
         });
-        const activeTE = vscode.window.activeTextEditor;
-        const filePath = activeTE["_documentData"]["_uri"]["path"];
+        const filePath = getCurrentFilePath();
         fileTag.addTag({ [filePath]: fileDescription });
+        vscode.window.showInformationMessage(`File Tag: Tag created.`);
       } catch (err) {
         console.log(err);
       }
@@ -52,7 +58,23 @@ function activate(context) {
     }
   );
 
-  context.subscriptions.push(createTag, listTags);
+  const currentTag = vscode.commands.registerCommand(
+    "extension.currentTag",
+    async () => {
+      try {
+        const fileTag = new FileTag();
+        const filePath = getCurrentFilePath();
+        const currentFileTag = fileTag.meta[filePath];
+        vscode.window.showInformationMessage(
+          `File Tag: ${currentFileTag ? currentFileTag : "No file tag."}`
+        );
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  );
+
+  context.subscriptions.push(createTag, listTags, currentTag);
 }
 exports.activate = activate;
 
