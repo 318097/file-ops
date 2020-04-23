@@ -6,7 +6,7 @@ const FileTag = require("./util");
  */
 function activate(context) {
   console.log('Congratulations, your extension "file-tag" is now active!');
-  let disposable = vscode.commands.registerCommand(
+  const createTag = vscode.commands.registerCommand(
     "extension.createTag",
     async () => {
       try {
@@ -23,7 +23,36 @@ function activate(context) {
     }
   );
 
-  context.subscriptions.push(disposable);
+  const listTags = vscode.commands.registerCommand(
+    "extension.listTags",
+    async () => {
+      try {
+        const fileTag = new FileTag();
+        const meta = Object.entries(fileTag.meta);
+        const list = meta.map(([path, tag], index) => `${index + 1}. ${tag}`);
+
+        const selected = await vscode.window.showQuickPick(list, {
+          placeHolder: "Select tag to load file",
+        });
+
+        if (!selected) return;
+
+        const selectedIndex = Number(selected.split(".")[0]) - 1;
+        const [path, tag] = meta[selectedIndex];
+
+        const fd = await vscode.workspace.openTextDocument(path);
+        vscode.window.showTextDocument(fd, {
+          preserveFocus: false,
+          preview: false,
+        });
+        await vscode.window.setStatusBarMessage(`Tag:${tag}`, 2000);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  );
+
+  context.subscriptions.push(createTag, listTags);
 }
 exports.activate = activate;
 

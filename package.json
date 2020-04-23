@@ -10,7 +10,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.createTag"
+    "onCommand:extension.createTag",
+    "onCommand:extension.listTags"
   ],
   "main": "./src/extension.js",
   "contributes": {
@@ -18,6 +19,10 @@
       {
         "command": "extension.createTag",
         "title": "File Tag: Create Tag"
+      },
+      {
+        "command": "extension.listTags",
+        "title": "File Tag: List Tags"
       }
     ]
   },
