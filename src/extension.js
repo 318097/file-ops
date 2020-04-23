@@ -74,7 +74,37 @@ function activate(context) {
     }
   );
 
-  context.subscriptions.push(createTag, listTags, currentTag);
+  const deleteTags = vscode.commands.registerCommand(
+    "extension.deleteTags",
+    async () => {
+      try {
+        const fileTag = new FileTag();
+        const meta = Object.entries(fileTag.meta);
+        const list = meta.map(([path, tag], index) => `${index + 1}. ${tag}`);
+
+        const selectedList = await vscode.window.showQuickPick(list, {
+          canPickMany: true,
+          placeHolder: "Select tag to load file",
+        });
+
+        if (!selectedList) return;
+
+        const selectedIdx = selectedList.map(
+          (selected) => Number(selected.split(".")[0]) - 1
+        );
+
+        const pathList = meta
+          .filter((_, idx) => selectedIdx.includes(idx))
+          .map(([path]) => path);
+
+        fileTag.deleteTags(pathList);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  );
+
+  context.subscriptions.push(createTag, listTags, currentTag, deleteTags);
 }
 exports.activate = activate;
 

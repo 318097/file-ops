@@ -38,5 +38,12 @@ class FileTag {
     this.meta = { ...this.meta, ...data };
     this.save();
   };
+
+  deleteTags = (fileList) => {
+    fileList.forEach((path) =>
+      this.meta[path] ? delete this.meta[path] : null
+    );
+    this.save();
+  };
 }
 module.exports = FileTag;

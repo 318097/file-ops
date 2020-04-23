@@ -12,7 +12,8 @@
   "activationEvents": [
     "onCommand:extension.createTag",
     "onCommand:extension.listTags",
-    "onCommand:extension.currentTag"
+    "onCommand:extension.currentTag",
+    "onCommand:extension.deleteTags"
   ],
   "main": "./src/extension.js",
   "contributes": {
@@ -28,6 +29,10 @@
       {
         "command": "extension.currentTag",
         "title": "File Tag: Current File tag"
+      },
+      {
+        "command": "extension.deleteTags",
+        "title": "File Tag: Delete tags"
       }
     ]
   },
