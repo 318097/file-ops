@@ -33,17 +33,6 @@ class FileTag {
     const workspaceBasePath = !!workspace ? workspace[0].uri.fsPath : "";
     this.path = `${workspaceBasePath}/${filename}`;
   };
-
-  addTag = (data) => {
-    this.meta = { ...this.meta, ...data };
-    this.save();
-  };
-
-  deleteTags = (fileList) => {
-    fileList.forEach((path) =>
-      this.meta[path] ? delete this.meta[path] : null
-    );
-    this.save();
-  };
 }
+
 module.exports = FileTag;

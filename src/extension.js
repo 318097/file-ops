@@ -11,17 +11,17 @@ const getCurrentFilePath = () => {
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-  console.log('Congratulations, your extension "file-tag" is now active!');
   const createTag = vscode.commands.registerCommand(
     "extension.createTag",
     async () => {
       try {
         const fileTag = new FileTag();
         const fileDescription = await vscode.window.showInputBox({
-          placeHolder: "Enter description",
+          placeHolder: "Enter tag description:",
         });
         const filePath = getCurrentFilePath();
-        fileTag.addTag({ [filePath]: fileDescription });
+        fileTag.meta[filePath] = fileDescription;
+        fileTag.save();
         vscode.window.showInformationMessage(`File Tag: Tag created.`);
       } catch (err) {
         console.log(err);
@@ -38,7 +38,7 @@ function activate(context) {
         const list = meta.map(([path, tag], index) => `${index + 1}. ${tag}`);
 
         const selected = await vscode.window.showQuickPick(list, {
-          placeHolder: "Select tag to load file",
+          placeHolder: "Select tag to load:",
         });
 
         if (!selected) return;
@@ -84,7 +84,7 @@ function activate(context) {
 
         const selectedList = await vscode.window.showQuickPick(list, {
           canPickMany: true,
-          placeHolder: "Select tag to load file",
+          placeHolder: "Select tags to delete:",
         });
 
         if (!selectedList) return;
@@ -93,11 +93,14 @@ function activate(context) {
           (selected) => Number(selected.split(".")[0]) - 1
         );
 
-        const pathList = meta
+        meta
           .filter((_, idx) => selectedIdx.includes(idx))
-          .map(([path]) => path);
+          .map(([path]) => path)
+          .forEach((path) =>
+            fileTag.meta[path] ? delete fileTag.meta[path] : null
+          );
 
-        fileTag.deleteTags(pathList);
+        fileTag.save();
       } catch (err) {
         console.log(err);
       }
@@ -113,7 +116,7 @@ function activate(context) {
         const list = meta.map(([path, tag], index) => `${index + 1}. ${tag}`);
 
         const selected = await vscode.window.showQuickPick(list, {
-          placeHolder: "Select tag to rename",
+          placeHolder: "Select tag to rename:",
         });
 
         if (!selected) return;
