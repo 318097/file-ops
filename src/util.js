@@ -12,27 +12,27 @@ class FileTag {
     this.init();
   }
 
-  init = () => {
+  init() {
     this.load();
     this.read();
-  };
+  }
 
-  read = () => {
+  read() {
     const hasConfigFile = fileExists(this.path);
     if (!hasConfigFile) this.save();
 
     this.meta = JSON.parse(fs.readFileSync(this.path, "utf-8")) || "{}";
-  };
+  }
 
-  save = () => {
+  save() {
     fs.writeFileSync(this.path, JSON.stringify(this.meta, undefined, 3));
-  };
+  }
 
-  load = () => {
+  load() {
     const workspace = vscode.workspace.workspaceFolders;
     const workspaceBasePath = !!workspace ? workspace[0].uri.fsPath : "";
     this.path = `${workspaceBasePath}/${filename}`;
-  };
+  }
 }
 
 module.exports = FileTag;

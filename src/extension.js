@@ -145,7 +145,6 @@ function activate(context) {
     renameTag
   );
 }
-exports.activate = activate;
 
 // this method is called when your extension is deactivated
 function deactivate() {}
