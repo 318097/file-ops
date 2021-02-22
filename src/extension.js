@@ -50,13 +50,18 @@ function activate(context) {
     async () => {
       try {
         const fileTag = new FileTag();
+        const filePath = getCurrentFilePath();
+
+        if (fileTag.meta[filePath])
+          await vscode.window.showInformationMessage(
+            `File Tag: Tag exists for this file. Continue to override`
+          );
+
         const name = await vscode.window.showInputBox({
           placeHolder: "Enter tag name:",
         });
 
         if (!name) return;
-
-        const filePath = getCurrentFilePath();
 
         fileTag.meta[filePath] = getDefaultFileObj(name);
         fileTag.save();
