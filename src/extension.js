@@ -1,10 +1,19 @@
 const vscode = require("vscode");
 const FileTag = require("./util");
 
+const getWorkspacePath = () => {
+  return vscode.workspace.workspaceFolders[0]["uri"]["path"];
+};
+
 const getCurrentFilePath = () => {
   const activeTE = vscode.window.activeTextEditor;
+  console.log(activeTE.document.fileName, activeTE.document.uri);
+  console.log(vscode.workspace.name, vscode.workspace.workspaceFolders);
+  // console.log("activeTE::-", activeTE);
+  const workspacePath = getWorkspacePath();
   const filePath = activeTE["_documentData"]["_uri"]["path"];
-  return filePath;
+  const relativePath = filePath.replace(workspacePath, "");
+  return relativePath;
 };
 
 /**
