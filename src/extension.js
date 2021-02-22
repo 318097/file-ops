@@ -1,19 +1,44 @@
 const vscode = require("vscode");
 const FileTag = require("./util");
 
+const getDefaultFileObj = (name) => ({
+  name,
+  favorite: false,
+  createdAt: new Date().toString(),
+});
+
 const getWorkspacePath = () => {
   return vscode.workspace.workspaceFolders[0]["uri"]["path"];
 };
 
+const parseData = (fileTag) => {
+  const meta = Object.entries(fileTag.meta);
+  const list = meta.map(([, { name }], index) => `${index + 1}. ${name}`);
+  return { meta, list };
+};
+
+const getAbsolutePath = (relative) => {
+  return `${getWorkspacePath()}${relative}`;
+};
+
 const getCurrentFilePath = () => {
   const activeTE = vscode.window.activeTextEditor;
-  console.log(activeTE.document.fileName, activeTE.document.uri);
-  console.log(vscode.workspace.name, vscode.workspace.workspaceFolders);
+  // console.log(activeTE.document.fileName, activeTE.document.uri);
+  // console.log(vscode.workspace.name, vscode.workspace.workspaceFolders);
   // console.log("activeTE::-", activeTE);
-  const workspacePath = getWorkspacePath();
   const filePath = activeTE["_documentData"]["_uri"]["path"];
-  const relativePath = filePath.replace(workspacePath, "");
-  return relativePath;
+  return filePath.replace(getWorkspacePath(), "");
+};
+
+const showDropdown = async (list, options) => {
+  const selected = await vscode.window.showQuickPick(list, options);
+  const selectedOptions = [].concat(selected);
+  if (!selectedOptions.length) return;
+
+  const selectedIdx = selectedOptions.map(
+    (selected) => Number(selected.split(".")[0]) - 1
+  );
+  return selectedIdx;
 };
 
 /**
@@ -25,13 +50,17 @@ function activate(context) {
     async () => {
       try {
         const fileTag = new FileTag();
-        const fileDescription = await vscode.window.showInputBox({
-          placeHolder: "Enter tag description:",
+        const name = await vscode.window.showInputBox({
+          placeHolder: "Enter tag name:",
         });
+
+        if (!name) return;
+
         const filePath = getCurrentFilePath();
-        fileTag.meta[filePath] = fileDescription;
+
+        fileTag.meta[filePath] = getDefaultFileObj(name);
         fileTag.save();
-        vscode.window.showInformationMessage(`File Tag: Tag created.`);
+        vscode.window.setStatusBarMessage(`File Tag: Tag created.`, 5000);
       } catch (err) {
         console.log(err);
       }
@@ -43,24 +72,22 @@ function activate(context) {
     async () => {
       try {
         const fileTag = new FileTag();
-        const meta = Object.entries(fileTag.meta);
-        const list = meta.map(([path, tag], index) => `${index + 1}. ${tag}`);
+        const { meta, list } = parseData(fileTag);
 
-        const selected = await vscode.window.showQuickPick(list, {
-          placeHolder: "Select tag to load:",
+        const [selectedIdx] = await showDropdown(list, {
+          placeHolder: "Select tag to open:",
         });
+        if (!selectedIdx) return;
+        const [relativePath, { name }] = meta[selectedIdx];
 
-        if (!selected) return;
-
-        const selectedIndex = Number(selected.split(".")[0]) - 1;
-        const [path, tag] = meta[selectedIndex];
-
-        const fd = await vscode.workspace.openTextDocument(path);
+        const fd = await vscode.workspace.openTextDocument(
+          getAbsolutePath(relativePath)
+        );
         vscode.window.showTextDocument(fd, {
           preserveFocus: false,
           preview: false,
         });
-        await vscode.window.setStatusBarMessage(`Tag:${tag}`, 2000);
+        await vscode.window.setStatusBarMessage(`Tag:${name}`, 3000);
       } catch (err) {
         console.log(err);
       }
@@ -73,9 +100,10 @@ function activate(context) {
       try {
         const fileTag = new FileTag();
         const filePath = getCurrentFilePath();
-        const currentFileTag = fileTag.meta[filePath];
-        vscode.window.showInformationMessage(
-          `File Tag: ${currentFileTag ? currentFileTag : "No file tag."}`
+        const { name } = fileTag.meta[filePath];
+        vscode.window.setStatusBarMessage(
+          `File Tag: ${name ? name : "No file tag."}`,
+          5000
         );
       } catch (err) {
         console.log(err);
@@ -88,26 +116,17 @@ function activate(context) {
     async () => {
       try {
         const fileTag = new FileTag();
-        const meta = Object.entries(fileTag.meta);
-        const list = meta.map(([path, tag], index) => `${index + 1}. ${tag}`);
+        const { meta, list } = parseData(fileTag);
 
-        const selectedList = await vscode.window.showQuickPick(list, {
+        const selectedIdx = await showDropdown(list, {
           canPickMany: true,
-          placeHolder: "Select tags to delete:",
+          placeHolder: "Select tag(s) to delete:",
         });
+        if (!selectedIdx.length) return;
 
-        if (!selectedList) return;
-
-        const selectedIdx = selectedList.map(
-          (selected) => Number(selected.split(".")[0]) - 1
+        meta.forEach((path, idx) =>
+          selectedIdx.includes(idx) ? delete fileTag.meta[path] : null
         );
-
-        meta
-          .filter((_, idx) => selectedIdx.includes(idx))
-          .map(([path]) => path)
-          .forEach((path) =>
-            fileTag.meta[path] ? delete fileTag.meta[path] : null
-          );
 
         fileTag.save();
       } catch (err) {
@@ -121,25 +140,28 @@ function activate(context) {
     async () => {
       try {
         const fileTag = new FileTag();
-        const meta = Object.entries(fileTag.meta);
-        const list = meta.map(([path, tag], index) => `${index + 1}. ${tag}`);
+        const { meta, list } = parseData(fileTag);
 
-        const selected = await vscode.window.showQuickPick(list, {
+        const [selectedIdx] = await showDropdown(list, {
           placeHolder: "Select tag to rename:",
         });
 
-        if (!selected) return;
+        if (!selectedIdx) return;
 
-        const newTag = await vscode.window.showInputBox({
-          placeHolder: "Enter new tag:",
+        const newTagName = await vscode.window.showInputBox({
+          placeHolder: "Enter new tag name:",
         });
 
-        const selectedIndex = Number(selected.split(".")[0]) - 1;
-        const [path] = meta[selectedIndex];
-        fileTag.meta[path] = newTag;
+        const [relativePath] = meta[selectedIdx];
+
+        fileTag.meta[relativePath] = {
+          ...fileTag.meta[relativePath],
+          name: newTagName,
+          updatedAt: new Date().toString(),
+        };
         fileTag.save();
 
-        vscode.window.showInformationMessage(`File Tag: Tag renamed.`);
+        vscode.window.setStatusBarMessage(`File Tag: Tag renamed.`, 5000);
       } catch (err) {
         console.log(err);
       }
