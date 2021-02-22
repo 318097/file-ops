@@ -60,7 +60,7 @@ function activate(context) {
 
         fileTag.meta[filePath] = getDefaultFileObj(name);
         fileTag.save();
-        vscode.window.setStatusBarMessage(`File Tag: Tag created.`, 5000);
+        vscode.window.showInformationMessage(`File Tag: Tag created.`);
       } catch (err) {
         console.log(err);
       }
@@ -87,7 +87,7 @@ function activate(context) {
           preserveFocus: false,
           preview: false,
         });
-        await vscode.window.setStatusBarMessage(`Tag:${name}`, 3000);
+        await vscode.window.showInformationMessage(`Tag:${name}`);
       } catch (err) {
         console.log(err);
       }
@@ -101,9 +101,8 @@ function activate(context) {
         const fileTag = new FileTag();
         const filePath = getCurrentFilePath();
         const { name } = fileTag.meta[filePath];
-        vscode.window.setStatusBarMessage(
-          `File Tag: ${name ? name : "No file tag."}`,
-          5000
+        vscode.window.showInformationMessage(
+          `File Tag: ${name ? name : "No file tag."}`
         );
       } catch (err) {
         console.log(err);
@@ -161,7 +160,7 @@ function activate(context) {
         };
         fileTag.save();
 
-        vscode.window.setStatusBarMessage(`File Tag: Tag renamed.`, 5000);
+        vscode.window.showInformationMessage(`File Tag: Tag renamed.`);
       } catch (err) {
         console.log(err);
       }
