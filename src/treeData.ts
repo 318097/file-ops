@@ -30,7 +30,7 @@ export class FileTagProvider implements vscode.TreeDataProvider<TreeItem> {
       return Promise.resolve([item]);
     } else {
       const { meta } = parseData(this.fileTag);
-      const tagList = meta.map(([filePath, { name }]) => new TreeItem(name, filePath, undefined, vscode.TreeItemCollapsibleState.Collapsed));
+      const tagList = meta.map(([filePath, { name }]) => new TreeItem(name, filePath, '', vscode.TreeItemCollapsibleState.Collapsed));
 
       return Promise.resolve(tagList);
     }
@@ -57,7 +57,7 @@ class TreeItem extends vscode.TreeItem {
   };
 
   iconPath = {
-    light: path.join(__filename, '..', '..', 'resources', 'light', 'dependency.svg'),
-    dark: path.join(__filename, '..', '..', 'resources', 'dark', 'dependency.svg')
+    light: path.join(__filename, '..', '..', 'icons', 'tag.svg'),
+    dark: path.join(__filename, '..', '..', 'icons', 'tag.svg')
   };
 }
