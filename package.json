@@ -37,12 +37,12 @@
 			"view/item/context": [
 				{
 					"command": "file-tag.deleteTags",
-					"when": "view == taggedFiles",
+					"when": "view == taggedFiles && viewItem == ROOT",
 					"group": "inline"
 				},
 				{
 					"command": "file-tag.renameTag",
-					"when": "view == taggedFiles",
+					"when": "view == taggedFiles && viewItem == ROOT",
 					"group": "inline"
 				}
 			]

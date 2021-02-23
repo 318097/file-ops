@@ -29,7 +29,7 @@ export class FileTagProvider implements vscode.TreeDataProvider<TreeItem> {
       return Promise.resolve([item]);
     } else {
       const { meta } = parseData(this.fileTag);
-      const tagList = meta.map(([filePath, { name }]) => new TreeItem(name, filePath, '', vscode.TreeItemCollapsibleState.Collapsed));
+      const tagList = meta.map(([filePath, { name }]) => new TreeItem(name, filePath, '', vscode.TreeItemCollapsibleState.Collapsed, true));
 
       return Promise.resolve(tagList);
     }
@@ -49,12 +49,14 @@ class TreeItem extends vscode.TreeItem {
     public readonly label: string,
     public filePath: string | undefined,
     private description: string | undefined,
-    public readonly collapsibleState: vscode.TreeItemCollapsibleState
+    public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+    public isRoot: boolean = false
   ) {
     super(label, collapsibleState);
     this.filePath = this.filePath;
     this.description = this.description;
     this.tooltip = this.label;
+    this.isRoot = this.isRoot;
   }
 
   command = {
@@ -62,6 +64,8 @@ class TreeItem extends vscode.TreeItem {
     command: 'file-tag.openTag',
     arguments: [this.filePath]
   };
+
+  contextValue = this.isRoot ? 'ROOT' : "CHILD";
 
   iconPath = {
     light: path.join(__filename, '..', '..', 'resources', 'dark', 'tag.svg'),
