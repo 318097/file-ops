@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import FileTag from './util';
+import FileTag from './FileTag';
 import { parseData } from './helpers';
 
 export class FileTagProvider implements vscode.TreeDataProvider<TreeItem> {

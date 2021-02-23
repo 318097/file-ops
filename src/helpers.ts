@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import FileTag from './util';
+import FileTag from './FileTag';
 
 const getDefaultFileObj = (name: string) => ({
   name,
