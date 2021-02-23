@@ -1,14 +1,16 @@
-import * as vscode from 'vscode';
+// import * as vscode from 'vscode';
 import * as fs from "fs";
+import { getWorkspacePath } from './helpers';
 
 const filename = ".file-tag";
 
-const fileExists = (filePath:string) => fs.existsSync(filePath);
+const fileExists = (filePath: string) => fs.existsSync(filePath);
 
 export default class FileTag {
-  path :string= "";
-meta :any= {};
-  
+  path: string = "";
+  empty: boolean = false;
+  meta: any = {};
+
   constructor() {
     this.init();
   }
@@ -20,7 +22,10 @@ meta :any= {};
 
   read() {
     const hasConfigFile = fileExists(this.path);
-    if (!hasConfigFile) this.save();
+    if (!hasConfigFile) {
+      this.save();
+      this.empty = true;
+    }
 
     this.meta = JSON.parse(fs.readFileSync(this.path, "utf-8")) || "{}";
   }
@@ -30,8 +35,7 @@ meta :any= {};
   }
 
   load() {
-    const workspace = vscode.workspace.workspaceFolders;
-    const workspaceBasePath = !!workspace ? workspace[0].uri.fsPath : "";
+    const workspaceBasePath = getWorkspacePath();
     this.path = `${workspaceBasePath}/${filename}`;
   }
 }

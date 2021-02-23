@@ -41,7 +41,7 @@ function activate(context) {
     const listTags = vscode.commands.registerCommand("file-tag.listTags", () => __awaiter(this, void 0, void 0, function* () {
         try {
             const fileTag = new util_1.default();
-            const { meta, list } = parseData(fileTag);
+            const { meta, list } = helpers_1.parseData(fileTag);
             const [selectedIdx] = yield helpers_1.showDropdown(list, {
                 placeHolder: "Select tag to open:",
             });
@@ -73,7 +73,7 @@ function activate(context) {
     const deleteTags = vscode.commands.registerCommand("file-tag.deleteTags", () => __awaiter(this, void 0, void 0, function* () {
         try {
             const fileTag = new util_1.default();
-            const { meta, list } = parseData(fileTag);
+            const { meta, list } = helpers_1.parseData(fileTag);
             const selectedIdx = yield helpers_1.showDropdown(list, {
                 canPickMany: true,
                 placeHolder: "Select tag(s) to delete:",
@@ -91,7 +91,7 @@ function activate(context) {
     const renameTag = vscode.commands.registerCommand("file-tag.renameTag", () => __awaiter(this, void 0, void 0, function* () {
         try {
             const fileTag = new util_1.default();
-            const { meta, list } = parseData(fileTag);
+            const { meta, list } = helpers_1.parseData(fileTag);
             const [selectedIdx] = yield helpers_1.showDropdown(list, {
                 placeHolder: "Select tag to rename:",
             });

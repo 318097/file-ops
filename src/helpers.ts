@@ -1,13 +1,16 @@
 import * as vscode from 'vscode';
 
-const getDefaultFileObj = (name:string) => ({
+const getDefaultFileObj = (name: string) => ({
   name,
   favorite: false,
   createdAt: new Date().toString(),
 });
 
 const getWorkspacePath = () => {
-  return vscode.workspace.workspaceFolders[0]["uri"]["path"];
+  const workspace = vscode.workspace.workspaceFolders;
+  const workspaceBasePath = !!workspace ? workspace[0].uri.fsPath : "";
+  return workspaceBasePath;
+  // return vscode.workspace.workspaceFolders[0]["uri"]["path"];
 };
 
 const parseData = (fileTag: FileTag) => {
@@ -16,7 +19,7 @@ const parseData = (fileTag: FileTag) => {
   return { meta, list };
 };
 
-const getAbsolutePath = (relative:string) => {
+const getAbsolutePath = (relative: string) => {
   return `${getWorkspacePath()}${relative}`;
 };
 
@@ -32,9 +35,9 @@ const getCurrentFilePath = () => {
 const showDropdown = async (list, options) => {
   const selected = await vscode.window.showQuickPick(list, options);
   const selectedOptions = [].concat(selected);
-	if (!selectedOptions.length) {
-		return;
-	}
+  if (!selectedOptions.length) {
+    return;
+  }
 
   const selectedIdx = selectedOptions.map(
     (selected) => Number(selected.split(".")[0]) - 1
@@ -44,8 +47,9 @@ const showDropdown = async (list, options) => {
 
 export {
   getDefaultFileObj,
-getWorkspacePath,
-getAbsolutePath,
-getCurrentFilePath,
-showDropdown
+  getWorkspacePath,
+  getAbsolutePath,
+  getCurrentFilePath,
+  showDropdown,
+  parseData
 }

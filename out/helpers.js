@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.showDropdown = exports.getCurrentFilePath = exports.getAbsolutePath = exports.getWorkspacePath = exports.getDefaultFileObj = void 0;
+exports.parseData = exports.showDropdown = exports.getCurrentFilePath = exports.getAbsolutePath = exports.getWorkspacePath = exports.getDefaultFileObj = void 0;
 const vscode = require("vscode");
 const getDefaultFileObj = (name) => ({
     name,
@@ -18,7 +18,10 @@ const getDefaultFileObj = (name) => ({
 });
 exports.getDefaultFileObj = getDefaultFileObj;
 const getWorkspacePath = () => {
-    return vscode.workspace.workspaceFolders[0]["uri"]["path"];
+    const workspace = vscode.workspace.workspaceFolders;
+    const workspaceBasePath = !!workspace ? workspace[0].uri.fsPath : "";
+    return workspaceBasePath;
+    // return vscode.workspace.workspaceFolders[0]["uri"]["path"];
 };
 exports.getWorkspacePath = getWorkspacePath;
 const parseData = (fileTag) => {
@@ -26,6 +29,7 @@ const parseData = (fileTag) => {
     const list = meta.map(([, { name }], index) => `${index + 1}. ${name}`);
     return { meta, list };
 };
+exports.parseData = parseData;
 const getAbsolutePath = (relative) => {
     return `${getWorkspacePath()}${relative}`;
 };

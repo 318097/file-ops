@@ -5,7 +5,7 @@ import {
   getWorkspacePath,
   getAbsolutePath,
   getCurrentFilePath,
-  showDropdown
+  showDropdown, parseData
 } from './helpers';
 import { FileTagProvider } from './treeData';
 
