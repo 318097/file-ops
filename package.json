@@ -30,6 +30,11 @@
 			],
 			"view/item/context": [
 				{
+					"command": "file-tag.deleteTags",
+					"when": "view == taggedFiles",
+					"group": "inline"
+				},
+				{
 					"command": "file-tag.renameTag",
 					"when": "view == taggedFiles",
 					"group": "inline"
@@ -63,6 +68,14 @@
 				"icon": {
 					"light": "resources/dark/refresh.svg",
 					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "file-tag.deleteTags",
+				"title": "Delete",
+				"icon": {
+					"light": "resources/dark/delete.svg",
+					"dark": "resources/dark/delete.svg"
 				}
 			},
 			{

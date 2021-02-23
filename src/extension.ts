@@ -108,20 +108,24 @@ export function activate(context: vscode.ExtensionContext) {
 
   const deleteTags = vscode.commands.registerCommand(
     "file-tag.deleteTags",
-    async () => {
+    async (treeItem) => {
       try {
         const fileTag = new FileTag();
         const { meta, list } = parseData(fileTag);
+        if (treeItem) {
+          const path = treeItem.filePath;
+          delete fileTag.meta[path];
+        } else {
+          const selectedIdx = await showDropdown(list, {
+            canPickMany: true,
+            placeHolder: "Select tag(s) to delete:",
+          });
+          if (!selectedIdx.length) { return; }
 
-        const selectedIdx = await showDropdown(list, {
-          canPickMany: true,
-          placeHolder: "Select tag(s) to delete:",
-        });
-        if (!selectedIdx.length) { return; }
-
-        meta.forEach((path, idx) =>
-          selectedIdx.includes(idx) ? delete fileTag.meta[path] : null
-        );
+          meta.forEach((path, idx) =>
+            selectedIdx.includes(idx) ? delete fileTag.meta[path] : null
+          );
+        }
 
         fileTag.save();
       } catch (err) {
