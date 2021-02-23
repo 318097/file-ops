@@ -10,14 +10,34 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:file-tag.helloWorld"
+		"onCommand:file-tag.createTag",
+		"onCommand:file-tag.listTags",
+		"onCommand:file-tag.currentTag",
+		"onCommand:file-tag.deleteTags",
+		"onCommand:file-tag.renameTag"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "file-tag.helloWorld",
-				"title": "Hello World"
+				"command": "file-tag.createTag",
+				"title": "File Tag: Create Tag"
+			},
+			{
+				"command": "file-tag.listTags",
+				"title": "File Tag: List Tags"
+			},
+			{
+				"command": "file-tag.currentTag",
+				"title": "File Tag: Current File tag"
+			},
+			{
+				"command": "file-tag.deleteTags",
+				"title": "File Tag: Delete tags"
+			},
+			{
+				"command": "file-tag.renameTag",
+				"title": "File Tag: Rename tag"
 			}
 		]
 	},
