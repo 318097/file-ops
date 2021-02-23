@@ -30,12 +30,12 @@
 			],
 			"view/item/context": [
 				{
-					"command": "file-tag.deleteTags",
+					"command": "file-tag.renameTag",
 					"when": "view == taggedFiles",
 					"group": "inline"
 				},
 				{
-					"command": "file-tag.renameTag",
+					"command": "file-tag.deleteTags",
 					"when": "view == taggedFiles",
 					"group": "inline"
 				}

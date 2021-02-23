@@ -20,7 +20,7 @@ const openFile = async (relativePath: string, name: string | undefined) => {
   if (name) {
     await vscode.window.showInformationMessage(`Tag:${name}`);
   }
-}
+};
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -53,6 +53,7 @@ export function activate(context: vscode.ExtensionContext) {
         fileTag.meta[filePath] = getDefaultFileObj(name);
         fileTag.save();
         vscode.window.showInformationMessage(`File Tag: Tag created.`);
+        taggedFilesProvider.refresh();
       } catch (err) {
         console.log(err);
       }
@@ -128,6 +129,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         fileTag.save();
+        taggedFilesProvider.refresh();
       } catch (err) {
         console.log(err);
       }
@@ -164,6 +166,7 @@ export function activate(context: vscode.ExtensionContext) {
         };
         fileTag.save();
 
+        taggedFilesProvider.refresh();
         vscode.window.showInformationMessage(`File Tag: Tag renamed.`);
       } catch (err) {
         console.log(err);
