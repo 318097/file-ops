@@ -12,44 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deactivate = exports.activate = void 0;
 const vscode = require("vscode");
 const util_1 = require("./util");
-const getDefaultFileObj = (name) => ({
-    name,
-    favorite: false,
-    createdAt: new Date().toString(),
-});
-const getWorkspacePath = () => {
-    return vscode.workspace.workspaceFolders[0]["uri"]["path"];
-};
-const parseData = (fileTag) => {
-    const meta = Object.entries(fileTag.meta);
-    const list = meta.map(([, { name }], index) => `${index + 1}. ${name}`);
-    return { meta, list };
-};
-const getAbsolutePath = (relative) => {
-    return `${getWorkspacePath()}${relative}`;
-};
-const getCurrentFilePath = () => {
-    const activeTE = vscode.window.activeTextEditor;
-    // console.log(activeTE.document.fileName, activeTE.document.uri);
-    // console.log(vscode.workspace.name, vscode.workspace.workspaceFolders);
-    // console.log("activeTE::-", activeTE);
-    const filePath = activeTE["_documentData"]["_uri"]["path"];
-    return filePath.replace(getWorkspacePath(), "");
-};
-const showDropdown = (list, options) => __awaiter(void 0, void 0, void 0, function* () {
-    const selected = yield vscode.window.showQuickPick(list, options);
-    const selectedOptions = [].concat(selected);
-    if (!selectedOptions.length) {
-        return;
-    }
-    const selectedIdx = selectedOptions.map((selected) => Number(selected.split(".")[0]) - 1);
-    return selectedIdx;
-});
+const helpers_1 = require("./helpers");
 function activate(context) {
     const createTag = vscode.commands.registerCommand("file-tag.createTag", () => __awaiter(this, void 0, void 0, function* () {
         try {
             const fileTag = new util_1.default();
-            const filePath = getCurrentFilePath();
+            const filePath = helpers_1.getCurrentFilePath();
             if (fileTag.meta[filePath]) {
                 yield vscode.window.showInformationMessage(`File Tag: Tag exists for this file. Continue to override`);
             }
@@ -59,7 +27,7 @@ function activate(context) {
             if (!name) {
                 return;
             }
-            fileTag.meta[filePath] = getDefaultFileObj(name);
+            fileTag.meta[filePath] = helpers_1.getDefaultFileObj(name);
             fileTag.save();
             vscode.window.showInformationMessage(`File Tag: Tag created.`);
         }
@@ -71,13 +39,13 @@ function activate(context) {
         try {
             const fileTag = new util_1.default();
             const { meta, list } = parseData(fileTag);
-            const [selectedIdx] = yield showDropdown(list, {
+            const [selectedIdx] = yield helpers_1.showDropdown(list, {
                 placeHolder: "Select tag to open:",
             });
             if (!selectedIdx)
                 return;
             const [relativePath, { name }] = meta[selectedIdx];
-            const fd = yield vscode.workspace.openTextDocument(getAbsolutePath(relativePath));
+            const fd = yield vscode.workspace.openTextDocument(helpers_1.getAbsolutePath(relativePath));
             vscode.window.showTextDocument(fd, {
                 preserveFocus: false,
                 preview: false,
@@ -91,7 +59,7 @@ function activate(context) {
     const currentTag = vscode.commands.registerCommand("file-tag.currentTag", () => __awaiter(this, void 0, void 0, function* () {
         try {
             const fileTag = new util_1.default();
-            const filePath = getCurrentFilePath();
+            const filePath = helpers_1.getCurrentFilePath();
             const { name } = fileTag.meta[filePath] || {};
             vscode.window.showInformationMessage(`File Tag: ${name || "No file tag."}`);
         }
@@ -103,7 +71,7 @@ function activate(context) {
         try {
             const fileTag = new util_1.default();
             const { meta, list } = parseData(fileTag);
-            const selectedIdx = yield showDropdown(list, {
+            const selectedIdx = yield helpers_1.showDropdown(list, {
                 canPickMany: true,
                 placeHolder: "Select tag(s) to delete:",
             });
@@ -121,7 +89,7 @@ function activate(context) {
         try {
             const fileTag = new util_1.default();
             const { meta, list } = parseData(fileTag);
-            const [selectedIdx] = yield showDropdown(list, {
+            const [selectedIdx] = yield helpers_1.showDropdown(list, {
                 placeHolder: "Select tag to rename:",
             });
             if (!selectedIdx)
