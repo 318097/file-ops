@@ -1,16 +1,16 @@
 import * as vscode from 'vscode';
+import FileTag from './util';
 
 const getDefaultFileObj = (name: string) => ({
   name,
   favorite: false,
-  createdAt: new Date().toString(),
+  createdAt: new Date().getTime(),
 });
 
 const getWorkspacePath = () => {
   const workspace = vscode.workspace.workspaceFolders;
-  const workspaceBasePath = !!workspace ? workspace[0].uri.fsPath : "";
+  const workspaceBasePath = workspace ? workspace[0].uri.fsPath : "";
   return workspaceBasePath;
-  // return vscode.workspace.workspaceFolders[0]["uri"]["path"];
 };
 
 const parseData = (fileTag: FileTag) => {
@@ -25,9 +25,6 @@ const getAbsolutePath = (relative: string) => {
 
 const getCurrentFilePath = () => {
   const activeTE = vscode.window.activeTextEditor;
-  // console.log(activeTE.document.fileName, activeTE.document.uri);
-  // console.log(vscode.workspace.name, vscode.workspace.workspaceFolders);
-  // console.log("activeTE::-", activeTE);
   const filePath = activeTE["_documentData"]["_uri"]["path"];
   return filePath.replace(getWorkspacePath(), "");
 };

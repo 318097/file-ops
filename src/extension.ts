@@ -149,7 +149,7 @@ export function activate(context: vscode.ExtensionContext) {
         fileTag.meta[relativePath] = {
           ...fileTag.meta[relativePath],
           name: newTagName,
-          updatedAt: new Date().toString(),
+          updatedAt: new Date().getTime(),
         };
         fileTag.save();
 

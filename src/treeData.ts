@@ -26,10 +26,11 @@ export class FileTagProvider implements vscode.TreeDataProvider<TreeItem> {
     }
 
     if (element) {
-      return Promise.resolve([new TreeItem(element.filePath, undefined, undefined, vscode.TreeItemCollapsibleState.None)]);
+      const item = new TreeItem(element.filePath, undefined, undefined, vscode.TreeItemCollapsibleState.None);
+      return Promise.resolve([item]);
     } else {
       const { meta } = parseData(this.fileTag);
-      const tagList = meta.map(([filePath, { name }]) => new TreeItem(name, filePath, 'v1', vscode.TreeItemCollapsibleState.Collapsed));
+      const tagList = meta.map(([filePath, { name }]) => new TreeItem(name, filePath, undefined, vscode.TreeItemCollapsibleState.Collapsed));
 
       return Promise.resolve(tagList);
     }
@@ -40,13 +41,13 @@ class TreeItem extends vscode.TreeItem {
   constructor(
     public readonly label: string,
     public filePath: string | undefined,
-    private status: string | undefined,
+    private description: string | undefined,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState
   ) {
     super(label, collapsibleState);
-    this.tooltip = this.label;
-    this.description = this.status;
     this.filePath = this.filePath;
+    this.description = this.description;
+    this.tooltip = this.label;
   }
 
   command = {
