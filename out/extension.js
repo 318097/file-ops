@@ -14,6 +14,16 @@ const vscode = require("vscode");
 const util_1 = require("./util");
 const helpers_1 = require("./helpers");
 const treeData_1 = require("./treeData");
+const openFile = (relativePath, name) => __awaiter(void 0, void 0, void 0, function* () {
+    const fd = yield vscode.workspace.openTextDocument(helpers_1.getAbsolutePath(relativePath));
+    vscode.window.showTextDocument(fd, {
+        preserveFocus: false,
+        preview: false,
+    });
+    if (name) {
+        yield vscode.window.showInformationMessage(`Tag:${name}`);
+    }
+});
 function activate(context) {
     const taggedFilesProvider = new treeData_1.FileTagProvider(helpers_1.getWorkspacePath());
     vscode.window.registerTreeDataProvider('taggedFiles', taggedFilesProvider);
@@ -48,12 +58,7 @@ function activate(context) {
             if (!selectedIdx)
                 return;
             const [relativePath, { name }] = meta[selectedIdx];
-            const fd = yield vscode.workspace.openTextDocument(helpers_1.getAbsolutePath(relativePath));
-            vscode.window.showTextDocument(fd, {
-                preserveFocus: false,
-                preview: false,
-            });
-            yield vscode.window.showInformationMessage(`Tag:${name}`);
+            openFile(relativePath, name);
         }
         catch (err) {
             console.log(err);
@@ -65,6 +70,14 @@ function activate(context) {
             const filePath = helpers_1.getCurrentFilePath();
             const { name } = fileTag.meta[filePath] || {};
             vscode.window.showInformationMessage(`File Tag: ${name || "No file tag."}`);
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }));
+    const openTag = vscode.commands.registerCommand("file-tag.openTag", (relativePath, tagName) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            openFile(relativePath, tagName);
         }
         catch (err) {
             console.log(err);
@@ -109,7 +122,7 @@ function activate(context) {
             console.log(err);
         }
     }));
-    context.subscriptions.push(createTag, listTags, currentTag, deleteTags, renameTag);
+    context.subscriptions.push(createTag, listTags, currentTag, deleteTags, renameTag, openTag);
 }
 exports.activate = activate;
 // this method is called when your extension is deactivated

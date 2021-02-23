@@ -25,7 +25,6 @@ export class FileTagProvider implements vscode.TreeDataProvider<TreeItem> {
       return Promise.resolve([]);
     }
 
-    console.log('element̉', element);
     if (element) {
       return Promise.resolve([new TreeItem(element.filePath, undefined, undefined, vscode.TreeItemCollapsibleState.None)]);
     } else {
@@ -49,6 +48,12 @@ class TreeItem extends vscode.TreeItem {
     this.description = this.status;
     this.filePath = this.filePath;
   }
+
+  command = {
+    title: 'open',
+    command: 'file-tag.openTag',
+    arguments: [this.filePath]
+  };
 
   iconPath = {
     light: path.join(__filename, '..', '..', 'resources', 'light', 'dependency.svg'),

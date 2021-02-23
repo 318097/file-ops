@@ -9,10 +9,24 @@ import {
 } from './helpers';
 import { FileTagProvider } from './treeData';
 
+const openFile = async (relativePath: string, name: string | undefined) => {
+  const fd = await vscode.workspace.openTextDocument(
+    getAbsolutePath(relativePath)
+  );
+  vscode.window.showTextDocument(fd, {
+    preserveFocus: false,
+    preview: false,
+  });
+  if (name) {
+    await vscode.window.showInformationMessage(`Tag:${name}`);
+  }
+}
+
 export function activate(context: vscode.ExtensionContext) {
 
   const taggedFilesProvider = new FileTagProvider(getWorkspacePath());
   vscode.window.registerTreeDataProvider('taggedFiles', taggedFilesProvider);
+
 
   const createTag = vscode.commands.registerCommand(
     "file-tag.createTag",
@@ -55,14 +69,7 @@ export function activate(context: vscode.ExtensionContext) {
         if (!selectedIdx) return;
         const [relativePath, { name }] = meta[selectedIdx];
 
-        const fd = await vscode.workspace.openTextDocument(
-          getAbsolutePath(relativePath)
-        );
-        vscode.window.showTextDocument(fd, {
-          preserveFocus: false,
-          preview: false,
-        });
-        await vscode.window.showInformationMessage(`Tag:${name}`);
+        openFile(relativePath, name);
       } catch (err) {
         console.log(err);
       }
@@ -79,6 +86,17 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showInformationMessage(
           `File Tag: ${name || "No file tag."}`
         );
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  );
+
+  const openTag = vscode.commands.registerCommand(
+    "file-tag.openTag",
+    async (relativePath, tagName) => {
+      try {
+        openFile(relativePath, tagName);
       } catch (err) {
         console.log(err);
       }
@@ -147,7 +165,8 @@ export function activate(context: vscode.ExtensionContext) {
     listTags,
     currentTag,
     deleteTags,
-    renameTag
+    renameTag,
+    openTag
   );
 }
 

@@ -15,6 +15,7 @@
 		"onCommand:file-tag.currentTag",
 		"onCommand:file-tag.deleteTags",
 		"onCommand:file-tag.renameTag",
+		"onCommand:file-tag.openTag",
 		"onView:taggedFiles"
 	],
 	"main": "./out/extension.js",
