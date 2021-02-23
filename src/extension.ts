@@ -159,6 +159,8 @@ export function activate(context: vscode.ExtensionContext) {
           placeHolder: "Enter new tag name:",
         });
 
+        if (!newTagName) return;
+
         fileTag.meta[relativePath] = {
           ...fileTag.meta[relativePath],
           name: newTagName,

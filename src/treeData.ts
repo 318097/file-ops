@@ -21,7 +21,6 @@ export class FileTagProvider implements vscode.TreeDataProvider<TreeItem> {
     }
 
     if (this.fileTag.empty) {
-      vscode.window.showInformationMessage('No tags.');
       return Promise.resolve([]);
     }
 
