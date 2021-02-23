@@ -14,7 +14,8 @@
 		"onCommand:file-tag.listTags",
 		"onCommand:file-tag.currentTag",
 		"onCommand:file-tag.deleteTags",
-		"onCommand:file-tag.renameTag"
+		"onCommand:file-tag.renameTag",
+		"onView:taggedFiles"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -39,7 +40,15 @@
 				"command": "file-tag.renameTag",
 				"title": "File Tag: Rename tag"
 			}
-		]
+		],
+		"views": {
+			"explorer": [
+				{
+					"id": "taggedFiles",
+					"name": "Tagged Files"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

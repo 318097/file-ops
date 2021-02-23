@@ -13,7 +13,10 @@ exports.deactivate = exports.activate = void 0;
 const vscode = require("vscode");
 const util_1 = require("./util");
 const helpers_1 = require("./helpers");
+const treeData_1 = require("./treeData");
 function activate(context) {
+    const taggedFilesProvider = new treeData_1.FileTagProvider(helpers_1.getWorkspacePath());
+    vscode.window.registerTreeDataProvider('taggedFiles', taggedFilesProvider);
     const createTag = vscode.commands.registerCommand("file-tag.createTag", () => __awaiter(this, void 0, void 0, function* () {
         try {
             const fileTag = new util_1.default();

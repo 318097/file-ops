@@ -1,29 +1,37 @@
 import * as vscode from 'vscode';
 import FileTag from './util';
-import {  getDefaultFileObj,
-getWorkspacePath,
-getAbsolutePath,
-getCurrentFilePath,
-showDropdown} from './helpers';
+import {
+  getDefaultFileObj,
+  getWorkspacePath,
+  getAbsolutePath,
+  getCurrentFilePath,
+  showDropdown
+} from './helpers';
+import { FileTagProvider } from './treeData';
 
 export function activate(context: vscode.ExtensionContext) {
-const createTag = vscode.commands.registerCommand(
+
+  const taggedFilesProvider = new FileTagProvider(getWorkspacePath());
+  vscode.window.registerTreeDataProvider('taggedFiles', taggedFilesProvider);
+
+  const createTag = vscode.commands.registerCommand(
     "file-tag.createTag",
     async () => {
       try {
         const fileTag = new FileTag();
         const filePath = getCurrentFilePath();
 
-        if (fileTag.meta[filePath]){
+        if (fileTag.meta[filePath]) {
           await vscode.window.showInformationMessage(
             `File Tag: Tag exists for this file. Continue to override`
-          );}
+          );
+        }
 
         const name = await vscode.window.showInputBox({
           placeHolder: "Enter tag name:",
         });
 
-        if (!name) {return;}
+        if (!name) { return; }
 
         fileTag.meta[filePath] = getDefaultFileObj(name);
         fileTag.save();
@@ -88,7 +96,7 @@ const createTag = vscode.commands.registerCommand(
           canPickMany: true,
           placeHolder: "Select tag(s) to delete:",
         });
-        if (!selectedIdx.length) {return;}
+        if (!selectedIdx.length) { return; }
 
         meta.forEach((path, idx) =>
           selectedIdx.includes(idx) ? delete fileTag.meta[path] : null
@@ -144,4 +152,4 @@ const createTag = vscode.commands.registerCommand(
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
