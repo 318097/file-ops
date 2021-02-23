@@ -20,6 +20,15 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"menus": {
+			"view/title": [
+				{
+					"command": "taggedFiles.refreshEntry",
+					"when": "view == taggedFiles",
+					"group": "navigation"
+				}
+			]
+		},
 		"commands": [
 			{
 				"command": "file-tag.createTag",
@@ -40,6 +49,14 @@
 			{
 				"command": "file-tag.renameTag",
 				"title": "File Tag: Rename tag"
+			},
+			{
+				"command": "taggedFiles.refreshEntry",
+				"title": "Refresh",
+				"icon": {
+					"light": "resources/dark/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
 			}
 		],
 		"views": {

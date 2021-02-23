@@ -35,6 +35,14 @@ export class FileTagProvider implements vscode.TreeDataProvider<TreeItem> {
       return Promise.resolve(tagList);
     }
   }
+
+  private _onDidChangeTreeData: vscode.EventEmitter<TreeItem | undefined | null | void> = new vscode.EventEmitter<TreeItem | undefined | null | void>();
+  readonly onDidChangeTreeData: vscode.Event<TreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
+
+  refresh(): void {
+    this._onDidChangeTreeData.fire();
+    this.fileTag = new FileTag();
+  }
 }
 
 class TreeItem extends vscode.TreeItem {
@@ -57,7 +65,7 @@ class TreeItem extends vscode.TreeItem {
   };
 
   iconPath = {
-    light: path.join(__filename, '..', '..', 'icons', 'tag.svg'),
-    dark: path.join(__filename, '..', '..', 'icons', 'tag.svg')
+    light: path.join(__filename, '..', '..', 'resources', 'dark', 'tag.svg'),
+    dark: path.join(__filename, '..', '..', 'resources', 'dark', 'tag.svg')
   };
 }

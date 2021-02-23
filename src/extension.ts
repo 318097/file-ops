@@ -27,6 +27,9 @@ export function activate(context: vscode.ExtensionContext) {
   const taggedFilesProvider = new FileTagProvider(getWorkspacePath());
   vscode.window.registerTreeDataProvider('taggedFiles', taggedFilesProvider);
 
+  vscode.commands.registerCommand('taggedFiles.refreshEntry', () =>
+    taggedFilesProvider.refresh()
+  );
 
   const createTag = vscode.commands.registerCommand(
     "file-tag.createTag",
