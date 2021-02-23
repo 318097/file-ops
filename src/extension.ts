@@ -132,22 +132,26 @@ export function activate(context: vscode.ExtensionContext) {
 
   const renameTag = vscode.commands.registerCommand(
     "file-tag.renameTag",
-    async () => {
+    async (treeItem) => {
       try {
         const fileTag = new FileTag();
-        const { meta, list } = parseData(fileTag);
+        let relativePath, newTagName;
+        if (treeItem) {
+          relativePath = treeItem.filePath;
+        } else {
+          const { meta, list } = parseData(fileTag);
 
-        const [selectedIdx] = await showDropdown(list, {
-          placeHolder: "Select tag to rename:",
-        });
+          const [selectedIdx] = await showDropdown(list, {
+            placeHolder: "Select tag to rename:",
+          });
 
-        if (!selectedIdx) return;
+          if (!selectedIdx) return;
+          [relativePath] = meta[selectedIdx];
+        }
 
-        const newTagName = await vscode.window.showInputBox({
+        newTagName = await vscode.window.showInputBox({
           placeHolder: "Enter new tag name:",
         });
-
-        const [relativePath] = meta[selectedIdx];
 
         fileTag.meta[relativePath] = {
           ...fileTag.meta[relativePath],

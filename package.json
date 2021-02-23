@@ -27,6 +27,13 @@
 					"when": "view == taggedFiles",
 					"group": "navigation"
 				}
+			],
+			"view/item/context": [
+				{
+					"command": "file-tag.renameTag",
+					"when": "view == taggedFiles",
+					"group": "inline"
+				}
 			]
 		},
 		"commands": [
@@ -56,6 +63,14 @@
 				"icon": {
 					"light": "resources/dark/refresh.svg",
 					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "file-tag.renameTag",
+				"title": "Edit",
+				"icon": {
+					"light": "resources/dark/edit.svg",
+					"dark": "resources/dark/edit.svg"
 				}
 			}
 		],
