@@ -12,20 +12,27 @@ const getWorkspacePath = () => {
   return workspaceBasePath;
 };
 
-const parseData = (data) => {
+const parseTagData = (data) => {
   const entries = Object.entries(data);
   const list = entries.map(([, { name }], index) => `${index + 1}. ${name}`);
   return { entries, list };
+};
+
+const parseGroupData = (data = []) => {
+  const list = data.map(({ name }, index) => `${index + 1}. ${name}`);
+  return { list };
 };
 
 const getAbsolutePath = (relative: string) => {
   return `${getWorkspacePath()}${relative}`;
 };
 
+const cleanFilePath = (filePath) => filePath.replace(getWorkspacePath(), "");
+
 const getCurrentFilePath = () => {
   const activeTE = vscode.window.activeTextEditor;
   const filePath = activeTE["_documentData"]["_uri"]["path"];
-  return filePath.replace(getWorkspacePath(), "");
+  return cleanFilePath(filePath);
 };
 
 const showDropdown = async (list: Array<any>, options: any): Promise<number | undefined> => {
@@ -47,5 +54,7 @@ export {
   getAbsolutePath,
   getCurrentFilePath,
   showDropdown,
-  parseData
+  parseTagData,
+  parseGroupData,
+  cleanFilePath
 }

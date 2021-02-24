@@ -6,7 +6,8 @@ import {
   getAbsolutePath,
   getCurrentFilePath,
   showDropdown,
-  parseData
+  parseTagData, parseGroupData,
+  cleanFilePath
 } from './helpers';
 import { FileTagProvider } from './FileTagProvider';
 
@@ -26,6 +27,7 @@ const openFile = async (relativePath: string, name: string | undefined) => {
 export function activate(context: vscode.ExtensionContext) {
 
   const fileTagProvider = new FileTagProvider(getWorkspacePath());
+
   vscode.window.registerTreeDataProvider('file-tag-tree', fileTagProvider);
 
   vscode.commands.registerCommand('file-tag-tree.refreshData', () =>
@@ -62,7 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
     async () => {
       try {
         const file = new File();
-        const { entries, list } = parseData(file.tags);
+        const { entries, list } = parseTagData(file.tags);
 
         const [selectedIdx] = await showDropdown(list, {
           placeHolder: "Select tag to open",
@@ -111,7 +113,7 @@ export function activate(context: vscode.ExtensionContext) {
     async (treeItem) => {
       try {
         const file = new File();
-        const { entries, list } = parseData(file.tags);
+        const { entries, list } = parseTagData(file.tags);
         if (treeItem) {
           const path = treeItem.filePath;
           delete file.tags[path];
@@ -144,7 +146,7 @@ export function activate(context: vscode.ExtensionContext) {
         if (treeItem) {
           relativePath = treeItem.filePath;
         } else {
-          const { entries, list } = parseData(file.tags);
+          const { entries, list } = parseTagData(file.tags);
 
           const [selectedIdx] = await showDropdown(list, {
             placeHolder: "Select tag to rename:",
@@ -175,13 +177,78 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
+  const saveGroup = vscode.commands.registerCommand(
+    "file-group.saveGroup",
+    async () => {
+      try {
+        const file = new File();
+        const name = await vscode.window.showInputBox({
+          placeHolder: "Group name",
+        });
+
+        const openFilePaths = vscode.workspace.textDocuments;
+        // console.log("workspace.textDocuments:", openFilePaths);
+
+        const filteredFilePaths = openFilePaths
+          .map((file) => {
+            console.log(file, file.fileName, cleanFilePath(file.fileName));
+            return cleanFilePath(file.fileName);
+          })
+          .filter((path) => !path.endsWith(".git"));
+
+        file.addGroup({
+          name: name || "Untitled group",
+          files: filteredFilePaths,
+        });
+
+        vscode.window.showInformationMessage(
+          `File Group: Group created`
+        );
+      } catch (err) {
+        console.log("Error: ", err);
+      }
+    }
+  );
+
+  const loadGroup = vscode.commands.registerCommand(
+    "file-group.loadGroup",
+    async () => {
+      try {
+
+        const file = new File();
+
+        const { list } = parseGroupData(file.groups);
+        const [selectedIdx] = await showDropdown(list, {
+          placeHolder: "Select group to rename:",
+        });
+        if (selectedIdx === undefined || selectedIdx === null) return;
+
+        await vscode.commands.executeCommand("workbench.action.closeAllEditors");
+
+        const fileList = file.groups[selectedIdx]['files'];
+
+        fileList.forEach(async (file: any) => {
+          const handler = await vscode.workspace.openTextDocument(openFile(file));
+          vscode.window.showTextDocument(handler, {
+            preserveFocus: false,
+            preview: false,
+          });
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  );
+
   context.subscriptions.push(
     createTag,
     listTags,
     currentTag,
     deleteTags,
     renameTag,
-    openTag
+    openTag,
+    saveGroup,
+    loadGroup
   );
 }
 

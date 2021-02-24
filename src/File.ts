@@ -5,7 +5,7 @@ export default class File {
   path: string = "";
   empty: boolean = false;
   tags: any = {};
-  groups: any = {};
+  groups: any = [];
 
   constructor() {
     this.setFilePath();
@@ -36,5 +36,10 @@ export default class File {
   setFilePath() {
     const workspaceBasePath = getWorkspacePath();
     this.path = `${workspaceBasePath}/${config.FILE_NAME}`;
+  }
+
+  addGroup(data) {
+    this.groups.push({ ...data, createdAt: new Date().getTime() });
+    this.save();
   }
 }

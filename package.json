@@ -16,7 +16,9 @@
 		"onCommand:file-tag.renameTag",
 		"onCommand:file-tag.deleteTags",
 		"onCommand:file-tag.openTag",
-		"onView:file-tag-tree"
+		"onView:file-tag-tree",
+		"onCommand:file-group.saveGroup",
+		"onCommand:file-group.loadGroup"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -91,6 +93,14 @@
 					"light": "resources/dark/delete.svg",
 					"dark": "resources/dark/delete.svg"
 				}
+			},
+			{
+				"command": "file-group.saveGroup",
+				"title": "File Group: Save Group"
+			},
+			{
+				"command": "file-group.loadGroup",
+				"title": "File Group: Load Group"
 			}
 		],
 		"views": {

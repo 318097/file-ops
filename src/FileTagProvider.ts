@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import File from './File';
-import { parseData } from './helpers';
+import { parseTagData } from './helpers';
 export class FileTagProvider implements vscode.TreeDataProvider<TreeItem> {
   file: File;
 
@@ -27,7 +27,7 @@ export class FileTagProvider implements vscode.TreeDataProvider<TreeItem> {
       const item = new TreeItem(element.filePath, undefined, vscode.TreeItemCollapsibleState.None);
       return Promise.resolve([item]);
     } else {
-      const { entries } = parseData(this.file.tags);
+      const { entries } = parseTagData(this.file.tags);
       const tagList = entries.map(([filePath, { name }]) => new TreeItem(name, filePath, vscode.TreeItemCollapsibleState.Collapsed, true));
 
       return Promise.resolve(tagList);
