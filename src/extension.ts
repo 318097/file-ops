@@ -98,6 +98,7 @@ export function activate(context: vscode.ExtensionContext) {
     "file-tag.openTag",
     async (relativePath, tagName) => {
       try {
+        if (!relativePath) return;
         openFile(relativePath, tagName);
       } catch (err) {
         console.log(err);

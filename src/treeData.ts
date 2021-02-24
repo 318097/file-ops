@@ -65,8 +65,8 @@ class TreeItem extends vscode.TreeItem {
 
   contextValue = this.isRoot ? 'ROOT' : "CHILD";
 
-  iconPath = {
+  iconPath = this.isRoot ? {
     light: path.join(__filename, '..', '..', 'resources', 'dark', 'tag.svg'),
     dark: path.join(__filename, '..', '..', 'resources', 'dark', 'tag.svg')
-  };
+  } : undefined;
 }
