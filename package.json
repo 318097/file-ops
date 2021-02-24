@@ -16,33 +16,33 @@
 		"onCommand:file-tag.renameTag",
 		"onCommand:file-tag.deleteTags",
 		"onCommand:file-tag.openTag",
-		"onView:taggedFiles"
+		"onView:file-tag-tree"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"viewsWelcome": [
 			{
-				"view": "taggedFiles",
+				"view": "file-tag-tree",
 				"contents": "No Tagged Files"
 			}
 		],
 		"menus": {
 			"view/title": [
 				{
-					"command": "taggedFiles.refreshEntry",
-					"when": "view == taggedFiles",
+					"command": "file-tag-tree.refreshData",
+					"when": "view == file-tag-tree",
 					"group": "navigation"
 				}
 			],
 			"view/item/context": [
 				{
 					"command": "file-tag.renameTag",
-					"when": "view == taggedFiles && viewItem == ROOT",
+					"when": "view == file-tag-tree && viewItem == ROOT",
 					"group": "inline"
 				},
 				{
 					"command": "file-tag.deleteTags",
-					"when": "view == taggedFiles && viewItem == ROOT",
+					"when": "view == file-tag-tree && viewItem == ROOT",
 					"group": "inline"
 				}
 			]
@@ -69,7 +69,7 @@
 				"title": "File Tag: Delete tags"
 			},
 			{
-				"command": "taggedFiles.refreshEntry",
+				"command": "file-tag-tree.refreshData",
 				"title": "Refresh",
 				"icon": {
 					"light": "resources/dark/refresh.svg",
@@ -96,7 +96,7 @@
 		"views": {
 			"explorer": [
 				{
-					"id": "taggedFiles",
+					"id": "file-tag-tree",
 					"name": "File Tag"
 				}
 			]

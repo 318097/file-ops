@@ -1,13 +1,12 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import FileTag from './FileTag';
+import File from './File';
 import { parseData } from './helpers';
-
 export class FileTagProvider implements vscode.TreeDataProvider<TreeItem> {
-  fileTag: FileTag;
+  file: File;
 
   constructor(private workspaceRoot: string) {
-    this.fileTag = new FileTag();
+    this.file = new File();
   }
 
   getTreeItem(element: TreeItem): vscode.TreeItem {
@@ -20,7 +19,7 @@ export class FileTagProvider implements vscode.TreeDataProvider<TreeItem> {
       return Promise.resolve([]);
     }
 
-    if (this.fileTag.empty) {
+    if (this.file.empty) {
       return Promise.resolve([]);
     }
 
@@ -28,8 +27,8 @@ export class FileTagProvider implements vscode.TreeDataProvider<TreeItem> {
       const item = new TreeItem(element.filePath, undefined, vscode.TreeItemCollapsibleState.None);
       return Promise.resolve([item]);
     } else {
-      const { meta } = parseData(this.fileTag);
-      const tagList = meta.map(([filePath, { name }]) => new TreeItem(name, filePath, vscode.TreeItemCollapsibleState.Collapsed, true));
+      const { entries } = parseData(this.file.tags);
+      const tagList = entries.map(([filePath, { name }]) => new TreeItem(name, filePath, vscode.TreeItemCollapsibleState.Collapsed, true));
 
       return Promise.resolve(tagList);
     }
@@ -40,7 +39,7 @@ export class FileTagProvider implements vscode.TreeDataProvider<TreeItem> {
 
   refresh(): void {
     this._onDidChangeTreeData.fire();
-    this.fileTag = new FileTag();
+    this.file = new File();
   }
 }
 

@@ -1,14 +1,14 @@
 import * as vscode from 'vscode';
-import FileTag from './FileTag';
+import File from './File';
 import {
-  getDefaultFileObj,
+  getDefaultFileTagObj,
   getWorkspacePath,
   getAbsolutePath,
   getCurrentFilePath,
   showDropdown,
   parseData
 } from './helpers';
-import { FileTagProvider } from './treeData';
+import { FileTagProvider } from './FileTagProvider';
 
 const openFile = async (relativePath: string, name: string | undefined) => {
   const fd = await vscode.workspace.openTextDocument(
@@ -25,32 +25,32 @@ const openFile = async (relativePath: string, name: string | undefined) => {
 
 export function activate(context: vscode.ExtensionContext) {
 
-  const taggedFilesProvider = new FileTagProvider(getWorkspacePath());
-  vscode.window.registerTreeDataProvider('taggedFiles', taggedFilesProvider);
+  const fileTagProvider = new FileTagProvider(getWorkspacePath());
+  vscode.window.registerTreeDataProvider('file-tag-tree', fileTagProvider);
 
-  vscode.commands.registerCommand('taggedFiles.refreshEntry', () =>
-    taggedFilesProvider.refresh()
+  vscode.commands.registerCommand('file-tag-tree.refreshData', () =>
+    fileTagProvider.refresh()
   );
 
   const createTag = vscode.commands.registerCommand(
     "file-tag.createTag",
     async () => {
       try {
-        const fileTag = new FileTag();
+        const file = new File();
         const filePath = getCurrentFilePath();
 
-        const existingTag = fileTag.meta[filePath];
+        const doesTagExist = file.tags[filePath];
 
         const name = await vscode.window.showInputBox({
-          placeHolder: existingTag ? `Tag exists. Enter new tag name to override` : `Enter tag name:`,
+          placeHolder: doesTagExist ? `Tag exists. Enter new tag name to override` : `Enter tag name:`,
         });
 
         if (!name) return;
 
-        fileTag.meta[filePath] = getDefaultFileObj(name);
-        fileTag.save();
-        vscode.window.showInformationMessage(`File Tag: Tag ${existingTag ? 'updated' : 'created'}.`);
-        taggedFilesProvider.refresh();
+        file.tags[filePath] = getDefaultFileTagObj(name);
+        file.save();
+        vscode.window.showInformationMessage(`File Tag: Tag ${doesTagExist ? 'updated' : 'created'}.`);
+        fileTagProvider.refresh();
       } catch (err) {
         console.log(err);
       }
@@ -61,15 +61,15 @@ export function activate(context: vscode.ExtensionContext) {
     "file-tag.listTags",
     async () => {
       try {
-        const fileTag = new FileTag();
-        const { meta, list } = parseData(fileTag);
+        const file = new File();
+        const { entries, list } = parseData(file.tags);
 
         const [selectedIdx] = await showDropdown(list, {
           placeHolder: "Select tag to open",
         });
-        if (!selectedIdx) { return; }
+        if (!selectedIdx) return;
 
-        const [relativePath, { name }] = meta[selectedIdx];
+        const [relativePath, { name }] = entries[selectedIdx];
 
         openFile(relativePath, name);
       } catch (err) {
@@ -82,9 +82,9 @@ export function activate(context: vscode.ExtensionContext) {
     "file-tag.currentTag",
     async () => {
       try {
-        const fileTag = new FileTag();
+        const file = new File();
         const filePath = getCurrentFilePath();
-        const { name } = fileTag.meta[filePath] || {};
+        const { name } = file.tags[filePath] || {};
         vscode.window.showInformationMessage(
           `File Tag: ${name || "No file tag."}`
         );
@@ -110,11 +110,11 @@ export function activate(context: vscode.ExtensionContext) {
     "file-tag.deleteTags",
     async (treeItem) => {
       try {
-        const fileTag = new FileTag();
-        const { meta, list } = parseData(fileTag);
+        const file = new File();
+        const { entries, list } = parseData(file.tags);
         if (treeItem) {
           const path = treeItem.filePath;
-          delete fileTag.meta[path];
+          delete file.tags[path];
         } else {
           const selectedIdx = await showDropdown(list, {
             canPickMany: true,
@@ -122,13 +122,13 @@ export function activate(context: vscode.ExtensionContext) {
           });
           if (!selectedIdx.length) return;
 
-          meta.forEach((path, idx) =>
-            selectedIdx.includes(idx) ? delete fileTag.meta[path] : null
+          entries.forEach((path, idx) =>
+            selectedIdx.includes(idx) ? delete file.tags[path] : null
           );
         }
 
-        fileTag.save();
-        taggedFilesProvider.refresh();
+        file.save();
+        fileTagProvider.refresh();
       } catch (err) {
         console.log(err);
       }
@@ -139,19 +139,19 @@ export function activate(context: vscode.ExtensionContext) {
     "file-tag.renameTag",
     async (treeItem) => {
       try {
-        const fileTag = new FileTag();
+        const file = new File();
         let relativePath, newTagName;
         if (treeItem) {
           relativePath = treeItem.filePath;
         } else {
-          const { meta, list } = parseData(fileTag);
+          const { entries, list } = parseData(file.tags);
 
           const [selectedIdx] = await showDropdown(list, {
             placeHolder: "Select tag to rename:",
           });
 
           if (!selectedIdx) return;
-          [relativePath] = meta[selectedIdx];
+          [relativePath] = entries[selectedIdx];
         }
 
         newTagName = await vscode.window.showInputBox({
@@ -160,14 +160,14 @@ export function activate(context: vscode.ExtensionContext) {
 
         if (!newTagName) return;
 
-        fileTag.meta[relativePath] = {
-          ...fileTag.meta[relativePath],
+        file.tags[relativePath] = {
+          ...file.tags[relativePath],
           name: newTagName,
           updatedAt: new Date().getTime(),
         };
-        fileTag.save();
+        file.save();
 
-        taggedFilesProvider.refresh();
+        fileTagProvider.refresh();
         vscode.window.showInformationMessage(`File Tag: Tag renamed.`);
       } catch (err) {
         console.log(err);

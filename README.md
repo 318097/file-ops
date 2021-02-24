@@ -1,5 +1,9 @@
 # file-tag README
 
+## Features (FILE TAG & FILE GROUP)
+  - Command: Create, Edit, Delete (multiple), Open
+  - Tree: View (all), Edit, Delete, Open
+
 This is the README for your extension "file-tag". After writing up a brief description, we recommend including the following sections.
 
 ## Features

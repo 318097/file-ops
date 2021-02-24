@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
-import FileTag from './FileTag';
+import File from './File';
 
-const getDefaultFileObj = (name: string) => ({
+const getDefaultFileTagObj = (name: string) => ({
   name,
   createdAt: new Date().getTime(),
 });
@@ -12,10 +12,10 @@ const getWorkspacePath = () => {
   return workspaceBasePath;
 };
 
-const parseData = (fileTag: FileTag) => {
-  const meta = Object.entries(fileTag.meta);
-  const list = meta.map(([, { name }], index) => `${index + 1}. ${name}`);
-  return { meta, list };
+const parseData = (data) => {
+  const entries = Object.entries(data);
+  const list = entries.map(([, { name }], index) => `${index + 1}. ${name}`);
+  return { entries, list };
 };
 
 const getAbsolutePath = (relative: string) => {
@@ -42,7 +42,7 @@ const showDropdown = async (list: Array<any>, options: any): Promise<number | un
 };
 
 export {
-  getDefaultFileObj,
+  getDefaultFileTagObj,
   getWorkspacePath,
   getAbsolutePath,
   getCurrentFilePath,
