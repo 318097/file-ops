@@ -1,4 +1,3 @@
-// import * as vscode from 'vscode';
 import * as fs from "fs";
 import { getWorkspacePath } from './helpers';
 

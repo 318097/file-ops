@@ -5,7 +5,8 @@ import {
   getWorkspacePath,
   getAbsolutePath,
   getCurrentFilePath,
-  showDropdown, parseData
+  showDropdown,
+  parseData
 } from './helpers';
 import { FileTagProvider } from './treeData';
 
@@ -38,21 +39,17 @@ export function activate(context: vscode.ExtensionContext) {
         const fileTag = new FileTag();
         const filePath = getCurrentFilePath();
 
-        if (fileTag.meta[filePath]) {
-          await vscode.window.showInformationMessage(
-            `File Tag: Tag exists for this file. Continue to override`
-          );
-        }
+        const existingTag = fileTag.meta[filePath];
 
         const name = await vscode.window.showInputBox({
-          placeHolder: "Enter tag name:",
+          placeHolder: existingTag ? `Tag exists. Enter new tag name to override` : `Enter tag name:`,
         });
 
-        if (!name) { return; }
+        if (!name) return;
 
         fileTag.meta[filePath] = getDefaultFileObj(name);
         fileTag.save();
-        vscode.window.showInformationMessage(`File Tag: Tag created.`);
+        vscode.window.showInformationMessage(`File Tag: Tag ${existingTag ? 'updated' : 'created'}.`);
         taggedFilesProvider.refresh();
       } catch (err) {
         console.log(err);
@@ -68,9 +65,10 @@ export function activate(context: vscode.ExtensionContext) {
         const { meta, list } = parseData(fileTag);
 
         const [selectedIdx] = await showDropdown(list, {
-          placeHolder: "Select tag to open:",
+          placeHolder: "Select tag to open",
         });
-        if (!selectedIdx) return;
+        if (!selectedIdx) { return; }
+
         const [relativePath, { name }] = meta[selectedIdx];
 
         openFile(relativePath, name);
@@ -121,7 +119,7 @@ export function activate(context: vscode.ExtensionContext) {
             canPickMany: true,
             placeHolder: "Select tag(s) to delete:",
           });
-          if (!selectedIdx.length) { return; }
+          if (!selectedIdx.length) return;
 
           meta.forEach((path, idx) =>
             selectedIdx.includes(idx) ? delete fileTag.meta[path] : null

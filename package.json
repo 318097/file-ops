@@ -36,12 +36,12 @@
 			],
 			"view/item/context": [
 				{
-					"command": "file-tag.deleteTags",
+					"command": "file-tag.renameTag",
 					"when": "view == taggedFiles && viewItem == ROOT",
 					"group": "inline"
 				},
 				{
-					"command": "file-tag.renameTag",
+					"command": "file-tag.deleteTags",
 					"when": "view == taggedFiles && viewItem == ROOT",
 					"group": "inline"
 				}
@@ -58,7 +58,7 @@
 			},
 			{
 				"command": "file-tag.currentTag",
-				"title": "File Tag: Current File tag"
+				"title": "File Tag: Show current File tag"
 			},
 			{
 				"command": "file-tag.renameTag",
@@ -97,7 +97,7 @@
 			"explorer": [
 				{
 					"id": "taggedFiles",
-					"name": "Tagged Files"
+					"name": "File Tag"
 				}
 			]
 		}

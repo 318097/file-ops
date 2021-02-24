@@ -3,7 +3,6 @@ import FileTag from './FileTag';
 
 const getDefaultFileObj = (name: string) => ({
   name,
-  favorite: false,
   createdAt: new Date().getTime(),
 });
 
@@ -29,7 +28,7 @@ const getCurrentFilePath = () => {
   return filePath.replace(getWorkspacePath(), "");
 };
 
-const showDropdown = async (list, options) => {
+const showDropdown = async (list: Array<any>, options: any): Promise<number | undefined> => {
   const selected = await vscode.window.showQuickPick(list, options);
   const selectedOptions = [].concat(selected);
   if (!selectedOptions.length) {
