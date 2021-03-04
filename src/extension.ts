@@ -6,23 +6,12 @@ import {
   getAbsolutePath,
   getCurrentFilePath,
   showDropdown,
-  parseTagData, parseGroupData,
-  cleanFilePath
+  parseTagData,
+  parseGroupData,
+  cleanFilePath,
+  openFile
 } from './helpers';
 import { FileTagProvider } from './FileTagProvider';
-
-const openFile = async (relativePath: string, name: string | undefined) => {
-  const fd = await vscode.workspace.openTextDocument(
-    getAbsolutePath(relativePath)
-  );
-  vscode.window.showTextDocument(fd, {
-    preserveFocus: false,
-    preview: false,
-  });
-  if (name) {
-    await vscode.window.showInformationMessage(`Tag:${name}`);
-  }
-};
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -187,7 +176,8 @@ export function activate(context: vscode.ExtensionContext) {
         });
 
         const openFilePaths = vscode.workspace.textDocuments;
-        // console.log("workspace.textDocuments:", openFilePaths);
+        console.log("window.activeTextEditor", vscode.window.activeTextEditor);
+        console.log("window.visibleTextEditors", vscode.window.visibleTextEditors);
 
         const filteredFilePaths = openFilePaths
           .map((file) => {

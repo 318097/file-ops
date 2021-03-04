@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import File from './File';
 
 const getDefaultFileTagObj = (name: string) => ({
   name,
@@ -48,6 +47,19 @@ const showDropdown = async (list: Array<any>, options: any): Promise<number | un
   return selectedIdx;
 };
 
+const openFile = async (relativePath: string, name: string | undefined) => {
+  const fd = await vscode.workspace.openTextDocument(
+    getAbsolutePath(relativePath)
+  );
+  vscode.window.showTextDocument(fd, {
+    preserveFocus: false,
+    preview: false,
+  });
+  if (name) {
+    await vscode.window.showInformationMessage(`Tag:${name}`);
+  }
+};
+
 export {
   getDefaultFileTagObj,
   getWorkspacePath,
@@ -56,5 +68,6 @@ export {
   showDropdown,
   parseTagData,
   parseGroupData,
-  cleanFilePath
+  cleanFilePath,
+  openFile
 }
