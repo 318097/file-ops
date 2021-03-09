@@ -1,4 +1,6 @@
 import * as vscode from 'vscode';
+import * as path from 'path';
+import * as fs from 'fs';
 import File from './File';
 import {
   getDefaultFileTagObj,
@@ -9,9 +11,13 @@ import {
   parseTagData,
   parseGroupData,
   cleanFilePath,
-  openFile
+  openFile,
+  getCurrentFileInfo, openDirectoryFile
 } from './helpers';
 import { FileTagProvider } from './FileTagProvider';
+import config from './config';
+
+const fsPromises = require('fs').promises;
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -227,8 +233,85 @@ export function activate(context: vscode.ExtensionContext) {
       } catch (err) {
         console.log(err);
       }
+    });
+
+  const quickSwitch = vscode.commands.registerCommand('file-switch.quickSwitch', async () => {
+    try {
+      const userDefinedSettings = vscode.workspace.getConfiguration('fileOps');
+      const USER_DEFINED_PAIRS = userDefinedSettings.get('fileSwitch.quickSwitchPairs');
+
+      const PAIRS = [...USER_DEFINED_PAIRS, ...config.QUICK_SWITCH_PAIRS];
+      const {
+        directoryPath, extensionName } = getCurrentFileInfo();
+
+      for (const pair of PAIRS) {
+        const split = pair.split('/');
+        const pair1 = split[0].split(',');
+        const pair2 = split[1].split(',');
+        let activePair;
+        if (pair1.includes(extensionName)) activePair = pair2;
+        else if (pair2.includes(extensionName)) activePair = pair1;
+        else return;
+
+        const fileList = await fsPromises.readdir(directoryPath);
+
+        const matchedFiles = fileList.filter(fileName => {
+          let match = false;
+          for (let i = 0; i < activePair.length; i++) {
+            const ext = activePair[i];
+            if (fileName.endsWith(ext)) {
+              match = true;
+              break;
+            }
+          }
+          return match;
+        });
+        if (matchedFiles.length === 1) {
+          openDirectoryFile(directoryPath, matchedFiles[0]);
+        } else if (matchedFiles.length > 1) {
+          const fileName = await vscode.window.showQuickPick(matchedFiles, {
+            placeHolder: "Matched files:",
+          });
+
+          if (!fileName) return;
+          openDirectoryFile(directoryPath, fileName);
+        }
+      }
+    } catch (err) {
+      console.log(err);
     }
-  );
+  });
+
+  const relatedFiles = vscode.commands.registerCommand('file-switch.relatedFiles', async () => {
+    try {
+      const { currentFileName,
+        directoryPath } = getCurrentFileInfo();
+
+      const fileList = await fsPromises.readdir(directoryPath);
+
+      const filesToDisplay = [];
+
+      fileList.forEach(fileName => {
+        const absPath = path.resolve(directoryPath, fileName);
+        const stats = fs.statSync(absPath);
+        if (fileName !== currentFileName && !stats.isDirectory()) {
+          filesToDisplay.push(fileName);
+        };
+      });
+
+      if (!filesToDisplay.length) return;
+
+      const fileName = await vscode.window.showQuickPick(filesToDisplay, {
+        placeHolder: "Files in current directory:",
+      });
+
+      if (!fileName) return;
+
+      openDirectoryFile(directoryPath, fileName);
+    } catch (err) {
+      console.log(err);
+    }
+  });
 
   context.subscriptions.push(
     createTag,
@@ -238,7 +321,9 @@ export function activate(context: vscode.ExtensionContext) {
     renameTag,
     openTag,
     saveGroup,
-    loadGroup
+    loadGroup,
+    quickSwitch,
+    relatedFiles
   );
 }
 

@@ -18,7 +18,9 @@
 		"onCommand:file-tag.openTag",
 		"onView:file-tag-tree",
 		"onCommand:file-group.saveGroup",
-		"onCommand:file-group.loadGroup"
+		"onCommand:file-group.loadGroup",
+		"onCommand:file-switch.relatedFiles",
+		"onCommand:file-switch.quickSwitch"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -60,7 +62,7 @@
 			},
 			{
 				"command": "file-tag.currentTag",
-				"title": "File Tag: Show current File tag"
+				"title": "File Tag: Show current file tag"
 			},
 			{
 				"command": "file-tag.renameTag",
@@ -101,6 +103,10 @@
 			{
 				"command": "file-group.loadGroup",
 				"title": "File Group: Load Group"
+			},
+			{
+				"command": "file-switch.relatedFiles",
+				"title": "File Switch: Related Files"
 			}
 		],
 		"views": {
@@ -110,6 +116,27 @@
 					"name": "File Tag"
 				}
 			]
+		},
+		"keybindings": [
+			{
+				"command": "file-switch.quickSwitch",
+				"key": "ctrl+d",
+				"mac": "cmd+d",
+				"when": "editorTextFocus"
+			}
+		],
+		"configuration": {
+			"title": "FileOps",
+			"properties": {
+				"fileOps.fileSwitch.quickSwitchPairs": {
+					"type": [
+						"array"
+					],
+					"default": [],
+					"markdownDescription": "Specify quick switch pairs. ex., `\".js,.ts/.css,.scss\"`",
+					"pattern": "(\\.[a-z]+)(,(\\.[a-z]+))*\\/(\\.[a-z]+)(,(\\.[a-z]+))*"
+				}
+			}
 		}
 	},
 	"scripts": {

@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import * as path from 'path';
 
 const getDefaultFileTagObj = (name: string) => ({
   name,
@@ -30,7 +31,9 @@ const cleanFilePath = (filePath) => filePath.replace(getWorkspacePath(), "");
 
 const getCurrentFilePath = () => {
   const activeTE = vscode.window.activeTextEditor;
-  const filePath = activeTE["_documentData"]["_uri"]["path"];
+  // const filePath = activeTE["_documentData"]["_uri"]["path"];
+  const filePath = activeTE["document"]["fileName"];
+
   return cleanFilePath(filePath);
 };
 
@@ -60,6 +63,34 @@ const openFile = async (relativePath: string, name: string | undefined) => {
   }
 };
 
+const getCurrentFileInfo = () => {
+  const activeTE = vscode.window.activeTextEditor;
+  // const filePath = activeTE["_documentData"]["_uri"]["path"];
+  const filePath = activeTE["document"]["fileName"];
+
+  const currentFileName = path.basename(filePath);
+  const directoryPath = path.dirname(filePath);
+  const extensionName = path.extname(filePath);
+
+  return {
+    filePath,
+    currentFileName,
+    directoryPath,
+    extensionName
+  };
+};
+
+const openDirectoryFile = async (directoryPath: string, fileName: string) => {
+  const filePath = path.resolve(directoryPath, fileName);
+  const fd = await vscode.workspace.openTextDocument(
+    filePath
+  );
+  vscode.window.showTextDocument(fd, {
+    preserveFocus: false,
+    preview: false,
+  });
+};
+
 export {
   getDefaultFileTagObj,
   getWorkspacePath,
@@ -69,5 +100,6 @@ export {
   parseTagData,
   parseGroupData,
   cleanFilePath,
-  openFile
+  openFile,
+  getCurrentFileInfo, openDirectoryFile
 }
