@@ -12,7 +12,9 @@ import {
   parseGroupData,
   cleanFilePath,
   openFile,
-  getCurrentFileInfo, openDirectoryFile
+  getCurrentFileInfo,
+  openDirectoryFile,
+  isFalsy
 } from './helpers';
 import { FileTagProvider } from './FileTagProvider';
 import config from './config';
@@ -61,10 +63,10 @@ export function activate(context: vscode.ExtensionContext) {
         const file = new File();
         const { entries, list } = parseTagData(file.tags);
 
-        const [selectedIdx] = await showDropdown(list, {
+        const selectedIdx = await showDropdown(list, {
           placeHolder: "Select tag to open",
         });
-        if (!selectedIdx) return;
+        if (isFalsy(selectedIdx)) return;
 
         const [relativePath, { name }] = entries[selectedIdx];
 
@@ -103,73 +105,89 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  const deleteTags = vscode.commands.registerCommand(
-    "file-tag.deleteTags",
-    async (treeItem) => {
-      try {
-        const file = new File();
-        const { entries, list } = parseTagData(file.tags);
-        if (treeItem) {
-          const path = treeItem.filePath;
-          delete file.tags[path];
-        } else {
-          const selectedIdx = await showDropdown(list, {
-            canPickMany: true,
-            placeHolder: "Select tag(s) to delete:",
-          });
-          if (!selectedIdx.length) return;
-
-          entries.forEach((path, idx) =>
-            selectedIdx.includes(idx) ? delete file.tags[path] : null
-          );
-        }
-
-        file.save();
-        fileTagProvider.refresh();
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  );
-
-  const renameTag = vscode.commands.registerCommand(
-    "file-tag.renameTag",
-    async (treeItem) => {
-      try {
-        const file = new File();
-        let relativePath, newTagName;
-        if (treeItem) {
-          relativePath = treeItem.filePath;
-        } else {
-          const { entries, list } = parseTagData(file.tags);
-
-          const [selectedIdx] = await showDropdown(list, {
-            placeHolder: "Select tag to rename:",
-          });
-
-          if (!selectedIdx) return;
-          [relativePath] = entries[selectedIdx];
-        }
-
-        newTagName = await vscode.window.showInputBox({
-          placeHolder: "Enter new tag name:",
+  const deleteTagHandler = async (treeItem) => {
+    try {
+      const file = new File();
+      const { entries, list } = parseTagData(file.tags);
+      if (treeItem) {
+        const path = treeItem.filePath;
+        delete file.tags[path];
+      } else {
+        const selectedIdx = await showDropdown(list, {
+          canPickMany: true,
+          placeHolder: "Select tag(s) to delete:",
         });
 
-        if (!newTagName) return;
+        if (isFalsy(selectedIdx)) return;
 
-        file.tags[relativePath] = {
-          ...file.tags[relativePath],
-          name: newTagName,
-          updatedAt: new Date().getTime(),
-        };
-        file.save();
-
-        fileTagProvider.refresh();
-        vscode.window.showInformationMessage(`File Tag: Tag renamed.`);
-      } catch (err) {
-        console.log(err);
+        entries.forEach(([path], idx) =>
+          selectedIdx.includes(idx) ? delete file.tags[path] : null
+        );
       }
+
+      file.save();
+      fileTagProvider.refresh();
+    } catch (err) {
+      console.log(err);
     }
+  };
+
+  const deleteTags = vscode.commands.registerCommand(
+    "file-tag.deleteTags",
+    deleteTagHandler
+  );
+
+
+  const deleteTagsTree = vscode.commands.registerCommand(
+    "file-tag-tree.deleteTags",
+    deleteTagHandler
+  );
+
+  const renameTagHandler = async (treeItem) => {
+    try {
+      const file = new File();
+      let relativePath, newTagName;
+
+      if (treeItem) {
+        relativePath = treeItem.filePath;
+      } else {
+        const { entries, list } = parseTagData(file.tags);
+
+        const selectedIdx = await showDropdown(list, {
+          placeHolder: "Select tag to rename:",
+        });
+
+        if (isFalsy(selectedIdx)) return;
+
+        [relativePath] = entries[selectedIdx];
+      }
+
+      newTagName = await vscode.window.showInputBox({
+        placeHolder: "Enter new tag name:",
+      });
+
+      if (!newTagName) return;
+
+      file.tags[relativePath] = {
+        ...file.tags[relativePath],
+        name: newTagName,
+        updatedAt: new Date().getTime(),
+      };
+      file.save();
+
+      fileTagProvider.refresh();
+      vscode.window.showInformationMessage(`File Tag: Tag renamed.`);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const renameTag = vscode.commands.registerCommand(
+    "file-tag.renameTag", renameTagHandler
+  );
+
+  const renameTagTree = vscode.commands.registerCommand(
+    "file-tag-tree.renameTag", renameTagHandler
   );
 
   const saveGroup = vscode.commands.registerCommand(
@@ -214,10 +232,10 @@ export function activate(context: vscode.ExtensionContext) {
         const file = new File();
 
         const { list } = parseGroupData(file.groups);
-        const [selectedIdx] = await showDropdown(list, {
+        const selectedIdx = await showDropdown(list, {
           placeHolder: "Select group to rename:",
         });
-        if (selectedIdx === undefined || selectedIdx === null) return;
+        if (isFalsy(selectedIdx)) return;
 
         await vscode.commands.executeCommand("workbench.action.closeAllEditors");
 
@@ -319,6 +337,8 @@ export function activate(context: vscode.ExtensionContext) {
     currentTag,
     deleteTags,
     renameTag,
+    renameTagTree,
+    deleteTagsTree,
     openTag,
     saveGroup,
     loadGroup,

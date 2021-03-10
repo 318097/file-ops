@@ -37,17 +37,28 @@ const getCurrentFilePath = () => {
   return cleanFilePath(filePath);
 };
 
-const showDropdown = async (list: Array<any>, options: any): Promise<number | undefined> => {
+const isFalsy = (value: any) => {
+  const isUndefined = value === undefined || value === null;
+  const isEmptyString = typeof value === 'string' && !value.trim();
+  const isEmptyArray = typeof value === 'object' && Array.isArray(value) && value.length === 0;
+  const isEmptyObject = typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length === 0;
+
+  return isUndefined || isEmptyString || isEmptyArray || isEmptyObject;
+};
+
+const showDropdown = async (list: Array<any>, options: any): Promise<number | undefined | Array<number>> => {
+  const multiSelect = options.canPickMany;
   const selected = await vscode.window.showQuickPick(list, options);
-  const selectedOptions = [].concat(selected);
-  if (!selectedOptions.length) {
+
+  const selectedOptions = [].concat(selected || []);
+
+  if (isFalsy(selectedOptions))
     return;
-  }
 
   const selectedIdx = selectedOptions.map(
     (selected) => Number(selected.split(".")[0]) - 1
   );
-  return selectedIdx;
+  return multiSelect ? selectedIdx : selectedIdx[0];
 };
 
 const openFile = async (relativePath: string, name: string | undefined) => {
@@ -101,5 +112,5 @@ export {
   parseGroupData,
   cleanFilePath,
   openFile,
-  getCurrentFileInfo, openDirectoryFile
+  getCurrentFileInfo, openDirectoryFile, isFalsy
 }

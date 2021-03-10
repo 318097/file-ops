@@ -40,12 +40,12 @@
 			],
 			"view/item/context": [
 				{
-					"command": "file-tag.renameTag",
+					"command": "file-tag-tree.renameTag",
 					"when": "view == file-tag-tree && viewItem == ROOT",
 					"group": "inline"
 				},
 				{
-					"command": "file-tag.deleteTags",
+					"command": "file-tag-tree.deleteTags",
 					"when": "view == file-tag-tree && viewItem == ROOT",
 					"group": "inline"
 				}
@@ -81,7 +81,7 @@
 				}
 			},
 			{
-				"command": "file-tag.renameTag",
+				"command": "file-tag-tree.renameTag",
 				"title": "Edit",
 				"icon": {
 					"light": "resources/dark/edit.svg",
@@ -89,7 +89,7 @@
 				}
 			},
 			{
-				"command": "file-tag.deleteTags",
+				"command": "file-tag-tree.deleteTags",
 				"title": "Delete",
 				"icon": {
 					"light": "resources/dark/delete.svg",
