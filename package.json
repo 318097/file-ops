@@ -2,7 +2,7 @@
 	"name": "file-ops",
 	"displayName": "file-ops",
 	"description": "",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"engines": {
 		"vscode": "^1.53.0"
 	},
@@ -122,6 +122,12 @@
 				"command": "file-switch.quickSwitch",
 				"key": "ctrl+d",
 				"mac": "cmd+d",
+				"when": "editorTextFocus"
+			},
+			{
+				"command": "file-switch.relatedFiles",
+				"key": "ctrl+shift+d",
+				"mac": "cmd+shift+d",
 				"when": "editorTextFocus"
 			}
 		],
