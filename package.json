@@ -27,7 +27,7 @@
 		"viewsWelcome": [
 			{
 				"view": "file-tag-tree",
-				"contents": "No Tagged Files"
+				"contents": "No Tagged Files.\nStart tagging files by going to `Command Palette` and running the command `File Tag: Create Tag`"
 			}
 		],
 		"menus": {
@@ -75,26 +75,17 @@
 			{
 				"command": "file-tag-tree.refreshData",
 				"title": "Refresh",
-				"icon": {
-					"light": "resources/dark/refresh.svg",
-					"dark": "resources/dark/refresh.svg"
-				}
+				"icon": "$(refresh)"
 			},
 			{
 				"command": "file-tag-tree.renameTag",
 				"title": "Edit",
-				"icon": {
-					"light": "resources/dark/edit.svg",
-					"dark": "resources/dark/edit.svg"
-				}
+				"icon": "$(edit)"
 			},
 			{
 				"command": "file-tag-tree.deleteTags",
 				"title": "Delete",
-				"icon": {
-					"light": "resources/dark/delete.svg",
-					"dark": "resources/dark/delete.svg"
-				}
+				"icon": "$(trash)"
 			},
 			{
 				"command": "file-group.saveGroup",
