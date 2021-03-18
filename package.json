@@ -27,7 +27,7 @@
 		"viewsWelcome": [
 			{
 				"view": "file-tag-tree",
-				"contents": "No Tagged Files.\nStart tagging files by going to `Command Palette` and running the command `File Tag: Create Tag`"
+				"contents": "No Tagged Files.\nStart tagging files by going to 'Command Palette' and running the command 'File Tag: Create Tag'"
 			}
 		],
 		"menus": {
