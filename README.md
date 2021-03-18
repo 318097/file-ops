@@ -27,7 +27,5 @@ This extension contributes the following settings:
   Accepted regex: `(\.[a-z]+)(,(\.[a-z]+))*\/(\.[a-z]+)(,(\.[a-z]+))*`
 
 <!-- ## Todo
-
-- [ ] Rename directly from tree item
-- [ ] Swap edit and delete icon
+- [x] Swap edit and delete icon
 - [x] Key bindings for commands -->
