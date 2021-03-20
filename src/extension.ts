@@ -340,10 +340,10 @@ export function activate(context: vscode.ExtensionContext) {
     renameTagTree,
     deleteTagsTree,
     openTag,
-    saveGroup,
-    loadGroup,
     quickSwitch,
     relatedFiles
+    // saveGroup,
+    // loadGroup,
   );
 }
 

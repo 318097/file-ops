@@ -9,7 +9,7 @@
    - Open, View, Edit, Delete file tags from the tree view.
 2. **File Switch**
    - **Quick Switch:** Quickly switch between extension pairs. ex., Switch between `.css` & `.js` files in the same folder.  
-     **Extend the functionality by providing custom pairs.**
+     _Extend the functionality by providing custom pairs._
    - **Related Files:** View all the files from the current directory
 
 ## Keyboard Shortcuts
@@ -25,7 +25,3 @@ This extension contributes the following settings:
 - `fileOps.fileSwitch.quickSwitchPairs`: Array of **quick switch** pairs. ex., `[".js,.ts/.css,.scss"]`.
 
   Accepted regex: `(\.[a-z]+)(,(\.[a-z]+))*\/(\.[a-z]+)(,(\.[a-z]+))*`
-
-<!-- ## Todo
-- [x] Swap edit and delete icon
-- [x] Key bindings for commands -->

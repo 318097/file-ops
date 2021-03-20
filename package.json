@@ -17,8 +17,6 @@
 		"onCommand:file-tag.deleteTags",
 		"onCommand:file-tag.openTag",
 		"onView:file-tag-tree",
-		"onCommand:file-group.saveGroup",
-		"onCommand:file-group.loadGroup",
 		"onCommand:file-switch.relatedFiles",
 		"onCommand:file-switch.quickSwitch"
 	],
@@ -86,14 +84,6 @@
 				"command": "file-tag-tree.deleteTags",
 				"title": "Delete",
 				"icon": "$(trash)"
-			},
-			{
-				"command": "file-group.saveGroup",
-				"title": "File Group: Save Group"
-			},
-			{
-				"command": "file-group.loadGroup",
-				"title": "File Group: Load Group"
 			},
 			{
 				"command": "file-switch.relatedFiles",
