@@ -1,11 +1,12 @@
 {
 	"name": "file-ops",
 	"displayName": "file-ops",
-	"description": "",
+	"description": "A VS code extension to tag/alias files & quick switch between files.",
 	"version": "1.0.0",
 	"engines": {
 		"vscode": "^1.53.0"
 	},
+	"publisher": "mehullakhanpal",
 	"categories": [
 		"Other"
 	],
