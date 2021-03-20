@@ -1,6 +1,6 @@
 {
 	"name": "file-ops",
-	"displayName": "file-ops",
+	"displayName": "File Ops",
 	"description": "A VS code extension to tag/alias files & quick switch between files.",
 	"version": "1.0.0",
 	"engines": {
@@ -10,6 +10,16 @@
 	"repository": "https://github.com/318097/file-ops",
 	"categories": [
 		"Other"
+	],
+	"author": "Mehul Lakhanpal <mehullakhanpal@gmail.com> (https://www.codedrops.tech)",
+	"keywords": [
+		"productivity",
+		"tagging",
+		"quick-switch",
+		"file-operations",
+		"bookmark",
+		"alias",
+		"file-shortcuts"
 	],
 	"activationEvents": [
 		"onCommand:file-tag.createTag",

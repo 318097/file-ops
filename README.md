@@ -1,4 +1,4 @@
-# File Ops README
+# File Ops
 
 > A VS code extension to tag/alias files & quick switch between files.
 
