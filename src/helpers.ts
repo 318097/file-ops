@@ -14,6 +14,7 @@ const getWorkspacePath = () => {
 
 const parseTagData = (data) => {
   const entries = Object.entries(data);
+  // @ts-ignore
   const list = entries.map(([, { name }], index) => `${index + 1}. ${name}`);
   return { entries, list };
 };
@@ -113,4 +114,4 @@ export {
   cleanFilePath,
   openFile,
   getCurrentFileInfo, openDirectoryFile, isFalsy
-}
+};

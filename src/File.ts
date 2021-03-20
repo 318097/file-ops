@@ -38,7 +38,7 @@ export default class File {
     this.path = `${workspaceBasePath}/${config.FILE_NAME}`;
   }
 
-  addGroup(data) {
+  addGroup(data: any) {
     this.groups.push({ ...data, createdAt: new Date().getTime() });
     this.save();
   }

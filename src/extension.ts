@@ -67,7 +67,7 @@ export function activate(context: vscode.ExtensionContext) {
           placeHolder: "Select tag to open",
         });
         if (isFalsy(selectedIdx)) return;
-
+        // @ts-ignore
         const [relativePath, { name }] = entries[selectedIdx];
 
         openFile(relativePath, name);
@@ -105,7 +105,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  const deleteTagHandler = async (treeItem) => {
+  const deleteTagHandler = async (treeItem: any) => {
     try {
       const file = new File();
       const { entries, list } = parseTagData(file.tags);
@@ -120,8 +120,10 @@ export function activate(context: vscode.ExtensionContext) {
 
         if (isFalsy(selectedIdx)) return;
 
-        entries.forEach(([path], idx) =>
-          selectedIdx.includes(idx) ? delete file.tags[path] : null
+        entries.forEach(([path], idx) => {
+          // @ts-ignore
+          selectedIdx.includes(idx) ? delete file.tags[path] : null;
+        }
         );
       }
 
@@ -143,7 +145,7 @@ export function activate(context: vscode.ExtensionContext) {
     deleteTagHandler
   );
 
-  const renameTagHandler = async (treeItem) => {
+  const renameTagHandler = async (treeItem: any) => {
     try {
       const file = new File();
       let relativePath, newTagName;
@@ -158,7 +160,7 @@ export function activate(context: vscode.ExtensionContext) {
         });
 
         if (isFalsy(selectedIdx)) return;
-
+        // @ts-ignore
         [relativePath] = entries[selectedIdx];
       }
 
@@ -190,73 +192,10 @@ export function activate(context: vscode.ExtensionContext) {
     "file-tag-tree.renameTag", renameTagHandler
   );
 
-  const saveGroup = vscode.commands.registerCommand(
-    "file-group.saveGroup",
-    async () => {
-      try {
-        const file = new File();
-        const name = await vscode.window.showInputBox({
-          placeHolder: "Group name",
-        });
-
-        const openFilePaths = vscode.workspace.textDocuments;
-        console.log("window.activeTextEditor", vscode.window.activeTextEditor);
-        console.log("window.visibleTextEditors", vscode.window.visibleTextEditors);
-
-        const filteredFilePaths = openFilePaths
-          .map((file) => {
-            console.log(file, file.fileName, cleanFilePath(file.fileName));
-            return cleanFilePath(file.fileName);
-          })
-          .filter((path) => !path.endsWith(".git"));
-
-        file.addGroup({
-          name: name || "Untitled group",
-          files: filteredFilePaths,
-        });
-
-        vscode.window.showInformationMessage(
-          `File Group: Group created`
-        );
-      } catch (err) {
-        console.log("Error: ", err);
-      }
-    }
-  );
-
-  const loadGroup = vscode.commands.registerCommand(
-    "file-group.loadGroup",
-    async () => {
-      try {
-
-        const file = new File();
-
-        const { list } = parseGroupData(file.groups);
-        const selectedIdx = await showDropdown(list, {
-          placeHolder: "Select group to rename:",
-        });
-        if (isFalsy(selectedIdx)) return;
-
-        await vscode.commands.executeCommand("workbench.action.closeAllEditors");
-
-        const fileList = file.groups[selectedIdx]['files'];
-
-        fileList.forEach(async (file: any) => {
-          const handler = await vscode.workspace.openTextDocument(openFile(file));
-          vscode.window.showTextDocument(handler, {
-            preserveFocus: false,
-            preview: false,
-          });
-        });
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
   const quickSwitch = vscode.commands.registerCommand('file-switch.quickSwitch', async () => {
     try {
       const userDefinedSettings = vscode.workspace.getConfiguration('fileOps');
-      const USER_DEFINED_PAIRS = userDefinedSettings.get('fileSwitch.quickSwitchPairs');
+      const USER_DEFINED_PAIRS: any = userDefinedSettings.get('fileSwitch.quickSwitchPairs');
 
       const PAIRS = [...USER_DEFINED_PAIRS, ...config.QUICK_SWITCH_PAIRS];
       const {
@@ -266,14 +205,14 @@ export function activate(context: vscode.ExtensionContext) {
         const split = pair.split('/');
         const pair1 = split[0].split(',');
         const pair2 = split[1].split(',');
-        let activePair;
+        let activePair: any;
         if (pair1.includes(extensionName)) activePair = pair2;
         else if (pair2.includes(extensionName)) activePair = pair1;
         else return;
 
         const fileList = await fsPromises.readdir(directoryPath);
 
-        const matchedFiles = fileList.filter(fileName => {
+        const matchedFiles = fileList.filter((fileName: any) => {
           let match = false;
           for (let i = 0; i < activePair.length; i++) {
             const ext = activePair[i];
@@ -307,9 +246,9 @@ export function activate(context: vscode.ExtensionContext) {
 
       const fileList = await fsPromises.readdir(directoryPath);
 
-      const filesToDisplay = [];
+      const filesToDisplay: any = [];
 
-      fileList.forEach(fileName => {
+      fileList.forEach((fileName: any) => {
         const absPath = path.resolve(directoryPath, fileName);
         const stats = fs.statSync(absPath);
         if (fileName !== currentFileName && !stats.isDirectory()) {
@@ -330,6 +269,69 @@ export function activate(context: vscode.ExtensionContext) {
       console.log(err);
     }
   });
+
+  // const saveGroup = vscode.commands.registerCommand(
+  //   "file-group.saveGroup",
+  //   async () => {
+  //     try {
+  //       const file = new File();
+  //       const name = await vscode.window.showInputBox({
+  //         placeHolder: "Group name",
+  //       });
+
+  //       const openFilePaths = vscode.workspace.textDocuments;
+  //       console.log("window.activeTextEditor", vscode.window.activeTextEditor);
+  //       console.log("window.visibleTextEditors", vscode.window.visibleTextEditors);
+
+  //       const filteredFilePaths = openFilePaths
+  //         .map((file) => {
+  //           console.log(file, file.fileName, cleanFilePath(file.fileName));
+  //           return cleanFilePath(file.fileName);
+  //         })
+  //         .filter((path) => !path.endsWith(".git"));
+
+  //       file.addGroup({
+  //         name: name || "Untitled group",
+  //         files: filteredFilePaths,
+  //       });
+
+  //       vscode.window.showInformationMessage(
+  //         `File Group: Group created`
+  //       );
+  //     } catch (err) {
+  //       console.log("Error: ", err);
+  //     }
+  //   }
+  // );
+
+  // const loadGroup = vscode.commands.registerCommand(
+  //   "file-group.loadGroup",
+  //   async () => {
+  //     try {
+
+  //       const file = new File();
+
+  //       const { list } = parseGroupData(file.groups);
+  //       const selectedIdx = await showDropdown(list, {
+  //         placeHolder: "Select group to rename:",
+  //       });
+  //       if (isFalsy(selectedIdx)) return;
+
+  //       await vscode.commands.executeCommand("workbench.action.closeAllEditors");
+
+  //       const fileList = file.groups[selectedIdx]['files'];
+
+  //       fileList.forEach(async (file: any) => {
+  //         const handler = await vscode.workspace.openTextDocument(openFile(file));
+  //         vscode.window.showTextDocument(handler, {
+  //           preserveFocus: false,
+  //           preview: false,
+  //         });
+  //       });
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   });
 
   context.subscriptions.push(
     createTag,

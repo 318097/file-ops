@@ -7,6 +7,7 @@
 		"vscode": "^1.53.0"
 	},
 	"publisher": "mehullakhanpal",
+	"repository": "https://github.com/318097/file-ops",
 	"categories": [
 		"Other"
 	],
