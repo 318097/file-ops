@@ -194,25 +194,38 @@ export function activate(context: vscode.ExtensionContext) {
 
   const quickSwitch = vscode.commands.registerCommand('file-switch.quickSwitch', async () => {
     try {
+      const pairRegex = /^(\.[a-z]+)(,(\.[a-z]+))*\/(\.[a-z]+)(,(\.[a-z]+))*$/;
+
       const userDefinedSettings = vscode.workspace.getConfiguration('fileOps');
       const USER_DEFINED_PAIRS: any = userDefinedSettings.get('fileSwitch.quickSwitchPairs');
 
       const PAIRS = [...USER_DEFINED_PAIRS, ...config.QUICK_SWITCH_PAIRS];
       const {
-        directoryPath, extensionName } = getCurrentFileInfo();
+        directoryPath, extensionName, currentFileName } = getCurrentFileInfo();
 
       for (const pair of PAIRS) {
+        const isValidPair = pairRegex.test(pair);
+
+        if (!isValidPair) {
+          vscode.window.showErrorMessage(`Invalid configuration: ${pair}`);
+          continue;
+        }
+
         const split = pair.split('/');
         const pair1 = split[0].split(',');
         const pair2 = split[1].split(',');
+
         let activePair: any;
+
         if (pair1.includes(extensionName)) activePair = pair2;
         else if (pair2.includes(extensionName)) activePair = pair1;
-        else return;
+        else continue;
 
         const fileList = await fsPromises.readdir(directoryPath);
 
         const matchedFiles = fileList.filter((fileName: any) => {
+          if (fileName === currentFileName) return false;
+
           let match = false;
           for (let i = 0; i < activePair.length; i++) {
             const ext = activePair[i];
@@ -223,15 +236,19 @@ export function activate(context: vscode.ExtensionContext) {
           }
           return match;
         });
+
         if (matchedFiles.length === 1) {
           openDirectoryFile(directoryPath, matchedFiles[0]);
+          break;
         } else if (matchedFiles.length > 1) {
           const fileName = await vscode.window.showQuickPick(matchedFiles, {
             placeHolder: "Matched files:",
           });
 
-          if (!fileName) return;
-          openDirectoryFile(directoryPath, fileName);
+          if (fileName)
+            openDirectoryFile(directoryPath, fileName);
+
+          break;
         }
       }
     } catch (err) {

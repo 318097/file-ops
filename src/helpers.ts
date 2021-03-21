@@ -113,5 +113,7 @@ export {
   parseGroupData,
   cleanFilePath,
   openFile,
-  getCurrentFileInfo, openDirectoryFile, isFalsy
+  getCurrentFileInfo,
+  openDirectoryFile,
+  isFalsy
 };
