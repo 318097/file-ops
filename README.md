@@ -12,6 +12,8 @@
      _Extend the functionality by providing custom pairs._
    - **Related Files:** View all the files from the current directory
 
+> Note: All extension data is stored in a file named `.file-tag` which gets created in rootworkspace directory. Please do not make any changes to that file. Add that file to the `.gitignore` based on the needs
+
 ## Keyboard Shortcuts
 
 Quick Switch - `Command+D` / `Control+D`
