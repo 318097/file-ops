@@ -224,7 +224,7 @@ export function activate(context: vscode.ExtensionContext) {
         const fileList = await fsPromises.readdir(directoryPath);
 
         const matchedFiles = fileList.filter((fileName: any) => {
-          if (fileName === currentFileName) return false;
+          if (fileName === currentFileName || config.QUICK_SWITCH_EXCLUDE_FILES.includes(fileName)) return false;
 
           let match = false;
           for (let i = 0; i < activePair.length; i++) {
