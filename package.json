@@ -114,14 +114,14 @@
 		"keybindings": [
 			{
 				"command": "file-switch.quickSwitch",
-				"key": "ctrl+d",
-				"mac": "cmd+d",
+				"key": "ctrl+e",
+				"mac": "cmd+e",
 				"when": "editorTextFocus"
 			},
 			{
 				"command": "file-switch.relatedFiles",
-				"key": "ctrl+shift+d",
-				"mac": "cmd+shift+d",
+				"key": "ctrl+shift+e",
+				"mac": "cmd+shift+e",
 				"when": "editorTextFocus"
 			}
 		],

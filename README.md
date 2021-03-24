@@ -16,9 +16,9 @@
 
 ## Keyboard Shortcuts
 
-Quick Switch - `Command+D` / `Control+D`
+Quick Switch - `Command+E` / `Control+E`
 
-Show related files & switch - `Command+Shift+D` / `Control+Shift+D`
+Show related files & switch - `Command+Shift+E` / `Control+Shift+E`
 
 ## Extension Settings
 
