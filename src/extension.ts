@@ -198,7 +198,6 @@ export function activate(context: vscode.ExtensionContext) {
 
       const userDefinedSettings = vscode.workspace.getConfiguration('fileOps');
       const USER_DEFINED_PAIRS: any = userDefinedSettings.get('fileSwitch.quickSwitchPairs');
-
       const PAIRS = [...USER_DEFINED_PAIRS, ...config.QUICK_SWITCH_PAIRS];
       const {
         directoryPath, extensionName, currentFileName } = getCurrentFileInfo();

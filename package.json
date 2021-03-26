@@ -99,6 +99,10 @@
 				"icon": "$(trash)"
 			},
 			{
+				"command": "file-switch.quickSwitch",
+				"title": "File Switch: Quick Switch"
+			},
+			{
 				"command": "file-switch.relatedFiles",
 				"title": "File Switch: Related Files"
 			}
@@ -132,8 +136,8 @@
 					"type": [
 						"array"
 					],
-					"default": [],
-					"markdownDescription": "Specify quick switch pairs. ex., `\".js,.ts/.css,.scss\"`",
+					"markdownDescription": "Specify quick switch pairs. ex., \".js,.ts/.css,.scss\"",
+					"description": "Specify quick switch pairs. ex., `\".js,.ts/.css,.scss\"`",
 					"pattern": "(\\.[a-z]+)(,(\\.[a-z]+))*\\/(\\.[a-z]+)(,(\\.[a-z]+))*"
 				}
 			}

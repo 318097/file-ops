@@ -8,7 +8,7 @@
    - Create, Open, Edit, Delete file tags using commands.
    - Open, View, Edit, Delete file tags from the tree view.
 2. **File Switch**
-   - **Quick Switch:** Quickly switch between extension pairs. ex., Switch between `.css` & `.js` files in the same folder.  
+   - **Quick Switch:** Quickly switch between extension pairs. ex., Switch between `.css` & `.js` files in the same folder. (Does not work for `index.js` file.)
      _Extend the functionality by providing custom pairs._
    - **Related Files:** View all the files from the current directory
 
