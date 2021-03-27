@@ -1,7 +1,7 @@
 {
 	"name": "file-ops",
 	"displayName": "File Ops",
-	"description": "A VS code extension to tag/alias files & quick switch between files.",
+	"description": "Easily tag/alias files & quick switch between files.",
 	"version": "1.0.0",
 	"engines": {
 		"vscode": "^1.53.0"
@@ -137,7 +137,7 @@
 						"array"
 					],
 					"markdownDescription": "Specify quick switch pairs. ex., \".js,.ts/.css,.scss\"",
-					"description": "Specify quick switch pairs. ex., `\".js,.ts/.css,.scss\"`",
+					"description": "Specify quick switch pairs. ex., \".js,.ts/.css,.scss\"",
 					"pattern": "(\\.[a-z]+)(,(\\.[a-z]+))*\\/(\\.[a-z]+)(,(\\.[a-z]+))*"
 				}
 			}

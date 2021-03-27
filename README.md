@@ -1,6 +1,6 @@
 # File Ops
 
-> A VS code extension to tag/alias files & quick switch between files.
+> Easily tag/alias files & quick switch between files.
 
 ## Features
 
@@ -12,7 +12,7 @@
      _Extend the functionality by providing custom pairs._
    - **Related Files:** View all the files from the current directory
 
-> Note: All extension data is stored in a file named `.file-tag` which gets created in rootworkspace directory. Please do not make any changes to that file. Add that file to the `.gitignore` based on the needs
+> Note: All extension data is stored in a file named `.file-tag` which gets created in root workspace directory. Please do not make any changes to that file. Add it to `.gitignore` based on the needs
 
 ## Keyboard Shortcuts
 
@@ -26,4 +26,4 @@ This extension contributes the following settings:
 
 - `fileOps.fileSwitch.quickSwitchPairs`: Array of **quick switch** pairs. ex., `[".js,.ts/.css,.scss"]`.
 
-  Accepted regex: `(\.[a-z]+)(,(\.[a-z]+))*\/(\.[a-z]+)(,(\.[a-z]+))*`
+  Accepted regex: `/^(\.[a-z]+)(,(\.[a-z]+))*\/(\.[a-z]+)(,(\.[a-z]+))*$/`
