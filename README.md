@@ -9,7 +9,7 @@
 - Create, Open, Edit, Delete file tags using commands.
 - Open, View, Edit, Delete file tags from the tree view.
 
-  ![Alt](assets/File%20Ops%20-%20File%20Tag.gif)
+  ![Alt](assets/file-tag-demo.gif)
 
 ### File Switch
 
@@ -18,13 +18,13 @@
   Quickly switch between extension pairs. ex., Switch between `.css` & `.js` files in the same folder. (Does not work for `index.js` file.)  
   _Extend the functionality by providing custom pairs._
 
-  ![Alt](assets/File%20Ops%20-%20Quick%20Switch.gif)
+  ![Alt](assets/quick-switch-demo.gif)
 
 - #### Related Files:
 
   View all the files from the current directory
 
-  ![Alt](assets/File%20Ops%20-%20Related%20Files.gif)
+  ![Alt](assets/related-files-demo.gif)
 
 > Note: All extension data is stored in a file named `.file-tag` which gets created in root workspace directory. Please do not make any changes to that file.  
 > Add it to `.gitignore` based on the needs
