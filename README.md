@@ -21,23 +21,29 @@
 
   ![File Tag Demo](assets/file-tag-demo.gif)
 
-### File Switch
+### Quick Switch
 
-- #### Quick Switch:
+Quickly switch between extension pairs. ex., Switch between `.css` & `.js` files in the same folder.
+_Extend the functionality by providing custom pairs._
 
-  Quickly switch between extension pairs. ex., Switch between `.css` & `.js` files in the same folder. (Does not work for `index.js` file.)  
-  _Extend the functionality by providing custom pairs._
+![Quick Switch Demo](assets/quick-switch-demo.gif)
 
-  ![Quick Switch Demo](assets/quick-switch-demo.gif)
+### Related Files
 
-- #### Related Files:
+View all the files from the current directory
 
-  View all the files from the current directory
-
-  ![Related Files Demo](assets/related-files-demo.gif)
+![Related Files Demo](assets/related-files-demo.gif)
 
 > Note: All extension data is stored in a file named `.file-tag` which gets created in root workspace directory. Please do not make any changes to that file.  
 > Add it to `.gitignore` based on the needs
+
+## Commands
+
+Run commands by opening Command Palette `Control+Shift+P` / `Command+Shift+P`
+
+![File Tag Commands](assets/file-tag-commands.png)
+
+![File Switch Commands](assets/file-switch-commands.png)
 
 ## Keyboard Shortcuts
 
@@ -52,3 +58,5 @@ This extension contributes the following settings:
 - `fileOps.fileSwitch.quickSwitchPairs`: Array of **quick switch** pairs. ex., `[".js,.ts/.css,.scss"]`.
 
   Accepted regex: `/^(\.[a-z]+)(,(\.[a-z]+))*\/(\.[a-z]+)(,(\.[a-z]+))*$/`
+
+> Defined values for `quickSwitchPairs` in the extension is `[".js,.ts/.css,.sass,.scss", ".js/.js", ".json/.md"]`. Please create an issue for the defined pairs you require & it will be added in default value list.

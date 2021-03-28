@@ -2,7 +2,7 @@
 	"name": "file-ops",
 	"displayName": "File Ops",
 	"description": "Easily tag/alias files & quick switch between files.",
-	"version": "1.0.4",
+	"version": "1.0.6",
 	"engines": {
 		"vscode": "^1.53.0"
 	},
