@@ -4,6 +4,8 @@
 
 > Easily tag/alias files & quick switch between files.
 
+[Demo](https://youtu.be/ze9KtYe3f48)
+
 ## Features
 
 ### File Tag
