@@ -1,10 +1,16 @@
-![Logo](assets/icon128.png)
-
 # File Ops
 
 > Easily tag/alias files & quick switch between files.
 
-[Demo](https://youtu.be/ze9KtYe3f48)
+## Overview
+
+**1. File Tag** - **Tag/Alias/Bookmark** files
+
+**2. Quick Switch** - Quickly switch between files. ex. Switch between **example.css** & **example.js** using **`Ctrl/Cmd+E`**
+
+**3. Switch to Related Files** - View files from the _current_ directory and _switch_
+
+[Watch Demo](https://youtu.be/ze9KtYe3f48)
 
 ## Features
 
