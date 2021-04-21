@@ -198,6 +198,8 @@ export function activate(context: vscode.ExtensionContext) {
 
       const userDefinedSettings = vscode.workspace.getConfiguration('fileOps');
       const USER_DEFINED_PAIRS: any = userDefinedSettings.get('fileSwitch.quickSwitchPairs');
+      const USER_DEFINED_EXCLUDE_FILES: any = userDefinedSettings.get('fileSwitch.excludeFiles');
+
       const PAIRS = [...USER_DEFINED_PAIRS, ...config.QUICK_SWITCH_PAIRS];
       const {
         directoryPath, extensionName, currentFileName } = getCurrentFileInfo();
@@ -223,7 +225,9 @@ export function activate(context: vscode.ExtensionContext) {
         const fileList = await fsPromises.readdir(directoryPath);
 
         const matchedFiles = fileList.filter((fileName: any) => {
-          if (fileName === currentFileName || config.QUICK_SWITCH_EXCLUDE_FILES.includes(fileName)) return false;
+          if (fileName === currentFileName ||
+            USER_DEFINED_EXCLUDE_FILES.includes(fileName))
+            return false;
 
           let match = false;
           for (let i = 0; i < activePair.length; i++) {

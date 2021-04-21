@@ -2,7 +2,7 @@
 	"name": "file-ops",
 	"displayName": "File Ops",
 	"description": "Easily tag/alias files & quick switch between files.",
-	"version": "1.0.6",
+	"version": "1.1.0",
 	"engines": {
 		"vscode": "^1.53.0"
 	},
@@ -142,6 +142,16 @@
 					"markdownDescription": "Specify quick switch pairs. ex., \".js,.ts/.css,.scss\"",
 					"description": "Specify quick switch pairs. ex., \".js,.ts/.css,.scss\"",
 					"pattern": "(\\.[a-z]+)(,(\\.[a-z]+))*\\/(\\.[a-z]+)(,(\\.[a-z]+))*"
+				},
+				"fileOps.fileSwitch.excludeFiles": {
+					"type": [
+						"array"
+					],
+					"default": [
+						"index.js"
+					],
+					"markdownDescription": "Files to skip in quick switch",
+					"description": "Files to skip in quick switch"
 				}
 			}
 		}

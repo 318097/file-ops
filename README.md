@@ -26,6 +26,8 @@
 Quickly switch between extension pairs. ex., Switch between `.css` & `.js` files in the same folder.
 _Extend the functionality by providing custom pairs._
 
+**Note**: By default, `index.js` file is skipped so the file wont be considered for switch. Check `fileOps.fileSwitch.excludeFiles` to override.
+
 ![Quick Switch Demo](assets/quick-switch-demo.gif)
 
 ### Related Files
@@ -60,3 +62,5 @@ This extension contributes the following settings:
   Accepted regex: `/^(\.[a-z]+)(,(\.[a-z]+))*\/(\.[a-z]+)(,(\.[a-z]+))*$/`
 
 > Defined values for `quickSwitchPairs` in the extension is `[".js,.ts/.css,.sass,.scss", ".js/.js", ".json/.md"]`. Please create an issue for the defined pairs you require & it will be added in default value list.
+
+- `fileOps.fileSwitch.excludeFiles`: Array of files names to exclude from quick switch. Default value is `["index.js"]`
