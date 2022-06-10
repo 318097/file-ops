@@ -63,6 +63,22 @@
 					"when": "view == file-tag-tree && viewItem == ROOT",
 					"group": "inline@2"
 				}
+			],
+			"explorer/context": [
+				{
+					"command": "path-copy.copyexplorerelative",
+					"group": "navigation"
+				}
+			],
+			"editor/context": [
+				{
+					"command": "path-copy.copyrelative",
+					"group": "navigation"
+				},
+				{
+					"command": "path-copy.pasterelative",
+					"group": "navigation"
+				}
 			]
 		},
 		"commands": [
@@ -108,6 +124,18 @@
 			{
 				"command": "file-switch.relatedFiles",
 				"title": "File Switch: Related Files"
+			},
+			{
+				"command": "path-copy.copyrelative",
+				"title": "Copy Relative"
+			},
+			{
+				"command": "path-copy.pasterelative",
+				"title": "Paste Relative"
+			},
+			{
+				"command": "path-copy.copyexplorerelative",
+				"title": "Copy Relative"
 			}
 		],
 		"views": {

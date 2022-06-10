@@ -23,6 +23,7 @@ const fsPromises = require('fs').promises;
 
 export function activate(context: vscode.ExtensionContext) {
 
+  var currPath = "" 
   const fileTagProvider = new FileTagProvider(getWorkspacePath());
 
   vscode.window.registerTreeDataProvider('file-tag-tree', fileTagProvider);
@@ -290,6 +291,42 @@ export function activate(context: vscode.ExtensionContext) {
     }
   });
 
+  const copyContextCommand =  vscode.commands.registerCommand('path-copy.copyrelative', () => {
+		vscode.window.showInformationMessage('Copied File Path');
+		if(vscode.window.activeTextEditor) {
+			currPath = vscode.window.activeTextEditor.document.uri.fsPath
+		}
+	});
+
+	const copyExplorerCommand =  vscode.commands.registerCommand('path-copy.copyexplorerelative', (uri:vscode.Uri) => {
+		currPath = uri.fsPath;
+	});
+	
+	const pasteContextCommand =  vscode.commands.registerTextEditorCommand('path-copy.pasterelative', (editor, edit) => {
+		vscode.window.showInformationMessage('Imported relative file path');
+		if(vscode.window.activeTextEditor){
+		let pArr = vscode.window.activeTextEditor.document.uri.fsPath.toString().split("\\");
+		let cArr = currPath.toString().split("\\");
+		 var finalPath = "";
+		cArr.some(createPath);
+ 
+		function createPath(item: string, index: number ) {
+				if(item==pArr[index]){
+				
+				} else if (item != pArr[index]) {
+					var lent = (pArr.length-1) - index;
+					var fS = ("../").repeat(lent);
+					var eS = cArr.slice(index,cArr.length).join("/");
+					finalPath = fS + eS;
+					return true;
+				}
+		}	
+		//finalPath = path.relative(vscode.window.activeTextEditor.document.uri.fsPath.toString(),currPath.toString())
+		edit.replace(editor.selection, finalPath);
+		}
+	});
+
+
   // const saveGroup = vscode.commands.registerCommand(
   //   "file-group.saveGroup",
   //   async () => {
@@ -363,7 +400,10 @@ export function activate(context: vscode.ExtensionContext) {
     deleteTagsTree,
     openTag,
     quickSwitch,
-    relatedFiles
+    relatedFiles,
+    copyContextCommand,
+    copyExplorerCommand,
+    pasteContextCommand
     // saveGroup,
     // loadGroup,
   );
