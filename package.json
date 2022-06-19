@@ -66,17 +66,17 @@
 			],
 			"explorer/context": [
 				{
-					"command": "path-copy.copyexplorerelative",
+					"command": "path-copy.copyExploreRelative",
 					"group": "navigation"
 				}
 			],
 			"editor/context": [
 				{
-					"command": "path-copy.copyrelative",
+					"command": "path-copy.copyContextRelative",
 					"group": "navigation"
 				},
 				{
-					"command": "path-copy.pasterelative",
+					"command": "path-copy.pasteContextRelative",
 					"group": "navigation"
 				}
 			]
@@ -126,16 +126,16 @@
 				"title": "File Switch: Related Files"
 			},
 			{
-				"command": "path-copy.copyrelative",
-				"title": "Copy Relative"
+				"command": "path-copy.copyContextRelative",
+				"title": "File Ops: Copy Path"
 			},
 			{
-				"command": "path-copy.pasterelative",
-				"title": "Paste Relative"
+				"command": "path-copy.pasteContextRelative",
+				"title": "File Ops: Paste Relative Path"
 			},
 			{
-				"command": "path-copy.copyexplorerelative",
-				"title": "Copy Relative"
+				"command": "path-copy.copyExploreRelative",
+				"title": "File Ops: Copy Path"
 			}
 		],
 		"views": {

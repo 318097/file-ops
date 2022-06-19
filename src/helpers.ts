@@ -103,6 +103,10 @@ const openDirectoryFile = async (directoryPath: string, fileName: string) => {
   });
 };
 
+const writeFileUriToClipboard = async (uri: vscode.Uri) => {
+  vscode.env.clipboard.writeText(uri.fsPath);
+};
+
 export {
   getDefaultFileTagObj,
   getWorkspacePath,
@@ -115,5 +119,6 @@ export {
   openFile,
   getCurrentFileInfo,
   openDirectoryFile,
-  isFalsy
+  isFalsy,
+  writeFileUriToClipboard
 };
