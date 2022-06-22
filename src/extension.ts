@@ -291,7 +291,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
   });
 
-  const copyContextCommand = vscode.commands.registerCommand('path-copy.copyContextRelative', async (uri: vscode.Uri) => {
+  const copyContextCommand = vscode.commands.registerCommand('file-import.copyContext', async (uri: vscode.Uri) => {
     try {
       if (!vscode.window.activeTextEditor) return;
 
@@ -299,10 +299,9 @@ export function activate(context: vscode.ExtensionContext) {
     } catch (err) {
       console.log(err);
     }
-
   });
 
-  const copyExplorerCommand = vscode.commands.registerCommand('path-copy.copyExploreRelative', async (uri: vscode.Uri) => {
+  const copyExplorerCommand = vscode.commands.registerCommand('file-import.copyExplore', async (uri: vscode.Uri) => {
     try {
       await writeFileUriToClipboard(uri)
     } catch (err) {
@@ -310,33 +309,52 @@ export function activate(context: vscode.ExtensionContext) {
     }
   });
 
-  const pasteContextCommand = vscode.commands.registerTextEditorCommand('path-copy.pasteContextRelative', async (editor, edit) => {
+  const pasteContextCommand = vscode.commands.registerTextEditorCommand('file-import.pasteContextRelative', async (editor, edit) => {
     try {
       if (!vscode.window.activeTextEditor) return;
 
-      let pArr = vscode.window.activeTextEditor.document.uri.fsPath.toString().split("\\");
-      let cArr = []
+      const userDefinedSettings = vscode.workspace.getConfiguration('fileOps');
+      const USER_DEFINED_QUOTES_OPTED: any = userDefinedSettings.get('fileImport.withQuotes');
+      const USER_DEFINED_FILE_EXTENSION_OPTED: any = userDefinedSettings.get('fileImport.removeFileExtension');
+
+      let pasteFilePathArr = vscode.window.activeTextEditor.document.uri.fsPath.toString().split("\\");
+      let copyFilePathArr = []
       let finalPath = "";
-      let clipboard_content = await vscode.env.clipboard.readText();
-      if (clipboard_content) {
-        cArr = clipboard_content.split("\\");
-        cArr.some(createPath);
+      let clipboardContent = await vscode.env.clipboard.readText();
+
+      if (clipboardContent) {
+       let isFileExists = fs.existsSync(clipboardContent) && fs.lstatSync(clipboardContent).isFile();
+       if (!isFileExists) {
+         vscode.window.showErrorMessage(`Invalid configuration`);
+         return;
+       }
+        
+        //finalPath = path.relative(vscode.window.activeTextEditor.document.uri.fsPath.toString(), clipboardContent)
+        copyFilePathArr = clipboardContent.split("\\");
+        copyFilePathArr.some(createPath);
+
         editor.edit((editBuilder) => {
+          if (USER_DEFINED_FILE_EXTENSION_OPTED) {
+            finalPath = path.parse(finalPath).name;
+          }
+          if (USER_DEFINED_QUOTES_OPTED) {
+            finalPath = "'" + finalPath + "'";
+          }
           editBuilder.replace(editor.selection, finalPath);
         })
       }
 
       function createPath(item: string, index: number) {
-        if (item == pArr[index]) {
-        } else if (item != pArr[index]) {
-          var lent = (pArr.length - 1) - index;
+        if (item == pasteFilePathArr[index]) {
+        } else if (item != pasteFilePathArr[index]) {
+          var lent = (pasteFilePathArr.length - 1) - index;
           var dottedPath = ("../").repeat(lent);
-          var remainPath = cArr.slice(index, cArr.length).join("/");
+          var remainPath = copyFilePathArr.slice(index, copyFilePathArr.length).join("/");
           finalPath = dottedPath + remainPath;
           return true;
         }
       }
-      //finalPath = path.relative(vscode.window.activeTextEditor.document.uri.fsPath.toString(),currPath.toString())
+
     } catch (err) {
       console.log(err);
     }

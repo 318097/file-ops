@@ -34,7 +34,9 @@
 		"onCommand:file-tag.openTag",
 		"onView:file-tag-tree",
 		"onCommand:file-switch.relatedFiles",
-		"onCommand:file-switch.quickSwitch"
+		"onCommand:file-switch.quickSwitch",
+		"onCommand:file-import.copyContext",
+		"onCommand:file-import.pasteContextRelative"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -66,17 +68,17 @@
 			],
 			"explorer/context": [
 				{
-					"command": "path-copy.copyExploreRelative",
+					"command": "file-import.copyExplore",
 					"group": "navigation"
 				}
 			],
 			"editor/context": [
 				{
-					"command": "path-copy.copyContextRelative",
+					"command": "file-import.copyContext",
 					"group": "navigation"
 				},
 				{
-					"command": "path-copy.pasteContextRelative",
+					"command": "file-import.pasteContextRelative",
 					"group": "navigation"
 				}
 			]
@@ -126,16 +128,16 @@
 				"title": "File Switch: Related Files"
 			},
 			{
-				"command": "path-copy.copyContextRelative",
+				"command": "file-import.copyContext",
 				"title": "File Ops: Copy Path"
 			},
 			{
-				"command": "path-copy.pasteContextRelative",
+				"command": "file-import.copyExplore",
+				"title": "File Ops: Copy Path"
+			},
+			{
+				"command": "file-import.pasteContextRelative",
 				"title": "File Ops: Paste Relative Path"
-			},
-			{
-				"command": "path-copy.copyExploreRelative",
-				"title": "File Ops: Copy Path"
 			}
 		],
 		"views": {
@@ -180,6 +182,16 @@
 					],
 					"markdownDescription": "Files to skip in quick switch",
 					"description": "Files to skip in quick switch"
+				},
+				"fileOps.fileImport.withQuotes":{
+					"type": "boolean",
+					"default": false,
+					"description": "Add/Remove quotes for file path"
+				},
+				"fileOps.fileImport.removeFileExtension":{
+					"type": "boolean",
+					"default": false,
+					"description": "Remove/Add file extension"
 				}
 			}
 		}
