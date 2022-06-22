@@ -323,12 +323,12 @@ export function activate(context: vscode.ExtensionContext) {
       let clipboardContent = await vscode.env.clipboard.readText();
 
       if (clipboardContent) {
-       let isFileExists = fs.existsSync(clipboardContent) && fs.lstatSync(clipboardContent).isFile();
-       if (!isFileExists) {
-         vscode.window.showErrorMessage(`Invalid configuration`);
-         return;
-       }
-        
+        let isFileExists = fs.existsSync(clipboardContent) && fs.lstatSync(clipboardContent).isFile();
+        if (!isFileExists) {
+          vscode.window.showErrorMessage(`Invalid configuration`);
+          return;
+        }
+
         //finalPath = path.relative(vscode.window.activeTextEditor.document.uri.fsPath.toString(), clipboardContent)
         copyFilePathArr = clipboardContent.split("\\");
         copyFilePathArr.some(createPath);
