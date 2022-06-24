@@ -103,14 +103,15 @@ const openDirectoryFile = async (directoryPath: string, fileName: string) => {
   });
 };
 
-const getSettings = (module) => {
+const getModuleSettings = (module) => {
   const userDefinedSettings = vscode.workspace.getConfiguration('fileOps');
   switch (module) {
     case 'file-import':
-      const INCLUDE_QUOTES: boolean = userDefinedSettings.get('fileImport.addQuotes');
+      const addQuotes: boolean = userDefinedSettings.get('fileImport.addQuotes');
+      const addFileExtension: boolean = userDefinedSettings.get('fileImport.addFileExtension');
       return {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        INCLUDE_QUOTES
+        addQuotes,
+        addFileExtension
       };
     default: return {};
   }
@@ -119,6 +120,15 @@ const getSettings = (module) => {
 const parseCurrentFilePath = () => {
   const currentFilePath = getCurrentFilePath(false);
   return path.parse(currentFilePath);
+};
+
+const readDataFromClipboard = () => vscode.env.clipboard.readText();
+
+const writeDataToClipboard = (data: any) => vscode.env.clipboard.writeText(data);
+
+const removeFileExtension = (filePath: string) => {
+  const { dir, name } = path.parse(filePath);
+  return path.join(dir, name);
 };
 
 export {
@@ -134,6 +144,9 @@ export {
   getCurrentFileInfo,
   openDirectoryFile,
   isFalsy,
-  getSettings,
-  parseCurrentFilePath
+  getModuleSettings,
+  parseCurrentFilePath,
+  writeDataToClipboard,
+  readDataFromClipboard,
+  removeFileExtension
 };

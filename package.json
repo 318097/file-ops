@@ -35,7 +35,8 @@
 		"onView:file-tag-tree",
 		"onCommand:file-switch.relatedFiles",
 		"onCommand:file-switch.quickSwitch",
-		"onCommand:file-import.pasteFilePath"
+		"onCommand:file-import.pasteFilePath",
+		"onCommand:file-import.copyFilePath"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -66,6 +67,10 @@
 				}
 			],
 			"editor/context": [
+				{
+					"command": "file-import.copyFilePath",
+					"group": "9_cutcopypaste"
+				},
 				{
 					"command": "file-import.pasteFilePath",
 					"group": "9_cutcopypaste"
@@ -117,8 +122,12 @@
 				"title": "File Switch: Related Files"
 			},
 			{
+				"command": "file-import.copyFilePath",
+				"title": "File Import: Copy Path"
+			},
+			{
 				"command": "file-import.pasteFilePath",
-				"title": "File Import: Paste path"
+				"title": "File Import: Paste Path"
 			}
 		],
 		"views": {
@@ -141,6 +150,18 @@
 				"key": "ctrl+shift+e",
 				"mac": "cmd+shift+e",
 				"when": "editorTextFocus"
+			},
+			{
+				"command": "file-import.copyFilePath",
+				"key": "ctrl+shift+c",
+				"mac": "cmd+shift+c",
+				"when": "editorTextFocus"
+			},
+			{
+				"command": "file-import.pasteFilePath",
+				"key": "ctrl+shift+v",
+				"mac": "cmd+shift+v",
+				"when": "editorTextFocus && resourceExtname != .md"
 			}
 		],
 		"configuration": {
@@ -167,7 +188,12 @@
 				"fileOps.fileImport.addQuotes": {
 					"type": "boolean",
 					"default": true,
-					"description": "Add quotes when pasting relative path"
+					"description": "Add quotes for 'File Import: Paste Path'"
+				},
+				"fileOps.fileImport.addFileExtension": {
+					"type": "boolean",
+					"default": true,
+					"description": "Add file extension for 'File Import: Paste Path'"
 				}
 			}
 		}

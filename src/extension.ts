@@ -15,8 +15,11 @@ import {
   getCurrentFileInfo,
   openDirectoryFile,
   isFalsy,
-  getSettings,
-  parseCurrentFilePath
+  getModuleSettings,
+  parseCurrentFilePath,
+  writeDataToClipboard,
+  readDataFromClipboard,
+  removeFileExtension
 } from './helpers';
 import { FileTagProvider } from './FileTagProvider';
 import config from './config';
@@ -292,42 +295,62 @@ export function activate(context: vscode.ExtensionContext) {
     }
   });
 
-  const pasteFilePath = vscode.commands.registerTextEditorCommand('file-import.pasteFilePath', async (editor) => {
-    try {
-      const copiedFilePath = await vscode.env.clipboard.readText();
+  const copyFilePath = vscode.commands.registerTextEditorCommand(
+    'file-import.copyFilePath',
+    async () => {
+      try {
+        const filePath = getCurrentFilePath(false);
+        writeDataToClipboard(filePath);
+      } catch (err) {
+        console.log(err);
+      }
+    });
 
-      if (!fs.existsSync(copiedFilePath))
-        return vscode.window.showInformationMessage(
-          `File Import: Invalid File Path`
+  const pasteFilePath = vscode.commands.registerTextEditorCommand(
+    'file-import.pasteFilePath',
+    async (editor) => {
+      try {
+        const targetFilePath = await readDataFromClipboard();
+
+        if (!fs.existsSync(targetFilePath))
+          return vscode.window.showErrorMessage(
+            `File Import: Invalid File Path`
+          );
+
+        const sourceFileObj = parseCurrentFilePath();
+        const userSettings = getModuleSettings('file-import');
+
+        const relativePath = path.relative(sourceFileObj.dir, targetFilePath);
+
+        // src & target file is same
+        if (sourceFileObj.base === relativePath)
+          return vscode.window.showErrorMessage(
+            `File Import: src & target file cannot be same`
+          );
+
+        const targetFileExtension = path.parse(targetFilePath).ext;
+
+        // No need for file extension when source & target have same extension
+        const addFileExtension = userSettings.addFileExtension && sourceFileObj.ext !== targetFileExtension;
+
+        let output = addFileExtension ? relativePath : removeFileExtension(relativePath);
+
+        if (!output.startsWith("../")) {
+          output = `./${output}`;
+        }
+
+        if (userSettings.addQuotes) {
+          output = `"${output}"`;
+        }
+
+        // insert `output` at current cursor position
+        editor.edit((editBuilder) =>
+          editBuilder.replace(editor.selection, output)
         );
-
-      const currentFile = parseCurrentFilePath();
-      const userSettings = getSettings('file-import');
-
-      let relativePath = path.relative(currentFile.dir, copiedFilePath);
-      console.log('relativePath::-', relativePath);
-
-      // src & target file is same
-      if (currentFile.base === relativePath) {
-        return;
+      } catch (err) {
+        console.log(err);
       }
-
-      if (!relativePath.startsWith("../")) {
-        relativePath = `./${relativePath}`;
-      }
-
-      if (userSettings.INCLUDE_QUOTES) {
-        relativePath = `"${relativePath}"`;
-      }
-
-      editor.edit((editBuilder) =>
-        editBuilder.replace(editor.selection, relativePath)
-      );
-
-    } catch (err) {
-      console.log(err);
-    }
-  });
+    });
 
   // const saveGroup = vscode.commands.registerCommand(
   //   "file-group.saveGroup",
@@ -403,6 +426,7 @@ export function activate(context: vscode.ExtensionContext) {
     openTag,
     quickSwitch,
     relatedFiles,
+    copyFilePath,
     pasteFilePath
     // saveGroup,
     // loadGroup,
