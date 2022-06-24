@@ -79,3 +79,15 @@ Run commands by opening Command Palette `Ctrl+Shift+P` / `Cmd+Shift+P`
 ---
 
 ## Other projects
+
+1. [Dev Box](https://chrome.google.com/webstore/detail/devbox/moifkpmfincoglpljkonmgnfaeonlgmo?utm_source=file_ops&utm_medium=readme) - A UI for local storage
+2. [Array Builder](https://www.arraybuilder.com?utm_source=file_ops&utm_medium=readme) - A free tool to visualize the output of array operations
+3. [Fireboard](https://web.fireboardapp.com/?utm_source=file_ops&utm_medium=readme) - A work tracker for software developers
+4. [Codedrops](https://codedrops.netlify.app/?utm_source=file_ops&utm_medium=readme) - Micro-blogging on Web development
+5. [Octon](https://octon.netlify.com/?utm_source=file_ops&utm_medium=readme) - Manage expenses, todos, goals, progress & personal timeline
+6. [Note Box](https://chrome.google.com/webstore/detail/note-box/mbbajjgefpenmkkhcnmmnoodlbcbfnmp?utm_source=file_ops&utm_medium=readme) - A chrome extension to add notes/todos based on URL
+7. [Github Marker](https://chrome.google.com/webstore/detail/github-marker/imjdbnnpnohgcdbpgnidgolnamoghpoo?utm_source=file_ops&utm_medium=readme) - A chrome extension to Favorite, Bookmark & Mark link as Read in Github
+
+## Support
+
+If you liked this extension consider supporting [here](https://www.buymeacoffee.com/mehullakhanpal)
