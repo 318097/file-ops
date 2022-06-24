@@ -30,12 +30,12 @@ const getAbsolutePath = (relative: string) => {
 
 const cleanFilePath = (filePath) => filePath.replace(getWorkspacePath(), "");
 
-const getCurrentFilePath = () => {
+const getCurrentFilePath = (clean: boolean = true) => {
   const activeTE = vscode.window.activeTextEditor;
   // const filePath = activeTE["_documentData"]["_uri"]["path"];
   const filePath = activeTE["document"]["fileName"];
 
-  return cleanFilePath(filePath);
+  return clean ? cleanFilePath(filePath) : filePath;
 };
 
 const isFalsy = (value: any) => {
@@ -103,6 +103,24 @@ const openDirectoryFile = async (directoryPath: string, fileName: string) => {
   });
 };
 
+const getSettings = (module) => {
+  const userDefinedSettings = vscode.workspace.getConfiguration('fileOps');
+  switch (module) {
+    case 'file-import':
+      const INCLUDE_QUOTES: boolean = userDefinedSettings.get('fileImport.addQuotes');
+      return {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        INCLUDE_QUOTES
+      };
+    default: return {};
+  }
+};
+
+const parseCurrentFilePath = () => {
+  const currentFilePath = getCurrentFilePath(false);
+  return path.parse(currentFilePath);
+};
+
 export {
   getDefaultFileTagObj,
   getWorkspacePath,
@@ -115,5 +133,7 @@ export {
   openFile,
   getCurrentFileInfo,
   openDirectoryFile,
-  isFalsy
+  isFalsy,
+  getSettings,
+  parseCurrentFilePath
 };

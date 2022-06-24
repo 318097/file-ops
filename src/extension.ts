@@ -14,7 +14,9 @@ import {
   openFile,
   getCurrentFileInfo,
   openDirectoryFile,
-  isFalsy
+  isFalsy,
+  getSettings,
+  parseCurrentFilePath
 } from './helpers';
 import { FileTagProvider } from './FileTagProvider';
 import config from './config';
@@ -290,6 +292,43 @@ export function activate(context: vscode.ExtensionContext) {
     }
   });
 
+  const pasteFilePath = vscode.commands.registerTextEditorCommand('file-import.pasteFilePath', async (editor) => {
+    try {
+      const copiedFilePath = await vscode.env.clipboard.readText();
+
+      if (!fs.existsSync(copiedFilePath))
+        return vscode.window.showInformationMessage(
+          `File Import: Invalid File Path`
+        );
+
+      const currentFile = parseCurrentFilePath();
+      const userSettings = getSettings('file-import');
+
+      let relativePath = path.relative(currentFile.dir, copiedFilePath);
+      console.log('relativePath::-', relativePath);
+
+      // src & target file is same
+      if (currentFile.base === relativePath) {
+        return;
+      }
+
+      if (!relativePath.startsWith("../")) {
+        relativePath = `./${relativePath}`;
+      }
+
+      if (userSettings.INCLUDE_QUOTES) {
+        relativePath = `"${relativePath}"`;
+      }
+
+      editor.edit((editBuilder) =>
+        editBuilder.replace(editor.selection, relativePath)
+      );
+
+    } catch (err) {
+      console.log(err);
+    }
+  });
+
   // const saveGroup = vscode.commands.registerCommand(
   //   "file-group.saveGroup",
   //   async () => {
@@ -363,7 +402,8 @@ export function activate(context: vscode.ExtensionContext) {
     deleteTagsTree,
     openTag,
     quickSwitch,
-    relatedFiles
+    relatedFiles,
+    pasteFilePath
     // saveGroup,
     // loadGroup,
   );

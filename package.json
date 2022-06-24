@@ -34,7 +34,8 @@
 		"onCommand:file-tag.openTag",
 		"onView:file-tag-tree",
 		"onCommand:file-switch.relatedFiles",
-		"onCommand:file-switch.quickSwitch"
+		"onCommand:file-switch.quickSwitch",
+		"onCommand:file-import.pasteFilePath"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -62,6 +63,12 @@
 					"command": "file-tag-tree.deleteTags",
 					"when": "view == file-tag-tree && viewItem == ROOT",
 					"group": "inline@2"
+				}
+			],
+			"editor/context": [
+				{
+					"command": "file-import.pasteFilePath",
+					"group": "9_cutcopypaste"
 				}
 			]
 		},
@@ -108,6 +115,10 @@
 			{
 				"command": "file-switch.relatedFiles",
 				"title": "File Switch: Related Files"
+			},
+			{
+				"command": "file-import.pasteFilePath",
+				"title": "File Import: Paste path"
 			}
 		],
 		"views": {
@@ -152,6 +163,11 @@
 					],
 					"markdownDescription": "Files to skip in quick switch",
 					"description": "Files to skip in quick switch"
+				},
+				"fileOps.fileImport.addQuotes": {
+					"type": "boolean",
+					"default": true,
+					"description": "Add quotes when pasting relative path"
 				}
 			}
 		}
