@@ -30,12 +30,12 @@ const getAbsolutePath = (relative: string) => {
 
 const cleanFilePath = (filePath) => filePath.replace(getWorkspacePath(), "");
 
-const getCurrentFilePath = () => {
+const getCurrentFilePath = (clean: boolean = true) => {
   const activeTE = vscode.window.activeTextEditor;
   // const filePath = activeTE["_documentData"]["_uri"]["path"];
   const filePath = activeTE["document"]["fileName"];
 
-  return cleanFilePath(filePath);
+  return clean ? cleanFilePath(filePath) : filePath;
 };
 
 const isFalsy = (value: any) => {
@@ -103,6 +103,34 @@ const openDirectoryFile = async (directoryPath: string, fileName: string) => {
   });
 };
 
+const getModuleSettings = (module) => {
+  const userDefinedSettings = vscode.workspace.getConfiguration('fileOps');
+  switch (module) {
+    case 'file-import':
+      const addQuotes: boolean = userDefinedSettings.get('fileImport.addQuotes');
+      const addFileExtension: boolean = userDefinedSettings.get('fileImport.addFileExtension');
+      return {
+        addQuotes,
+        addFileExtension
+      };
+    default: return {};
+  }
+};
+
+const parseCurrentFilePath = () => {
+  const currentFilePath = getCurrentFilePath(false);
+  return path.parse(currentFilePath);
+};
+
+const readDataFromClipboard = () => vscode.env.clipboard.readText();
+
+const writeDataToClipboard = (data: any) => vscode.env.clipboard.writeText(data);
+
+const removeFileExtension = (filePath: string) => {
+  const { dir, name } = path.parse(filePath);
+  return path.join(dir, name);
+};
+
 export {
   getDefaultFileTagObj,
   getWorkspacePath,
@@ -115,5 +143,10 @@ export {
   openFile,
   getCurrentFileInfo,
   openDirectoryFile,
-  isFalsy
+  isFalsy,
+  getModuleSettings,
+  parseCurrentFilePath,
+  writeDataToClipboard,
+  readDataFromClipboard,
+  removeFileExtension
 };

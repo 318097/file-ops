@@ -14,7 +14,12 @@ import {
   openFile,
   getCurrentFileInfo,
   openDirectoryFile,
-  isFalsy
+  isFalsy,
+  getModuleSettings,
+  parseCurrentFilePath,
+  writeDataToClipboard,
+  readDataFromClipboard,
+  removeFileExtension
 } from './helpers';
 import { FileTagProvider } from './FileTagProvider';
 import config from './config';
@@ -290,6 +295,63 @@ export function activate(context: vscode.ExtensionContext) {
     }
   });
 
+  const copyFilePath = vscode.commands.registerTextEditorCommand(
+    'file-import.copyFilePath',
+    async () => {
+      try {
+        const filePath = getCurrentFilePath(false);
+        writeDataToClipboard(filePath);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+  const pasteFilePath = vscode.commands.registerTextEditorCommand(
+    'file-import.pasteFilePath',
+    async (editor) => {
+      try {
+        const targetFilePath = await readDataFromClipboard();
+
+        if (!fs.existsSync(targetFilePath))
+          return vscode.window.showErrorMessage(
+            `File Import: Invalid File Path`
+          );
+
+        const sourceFileObj = parseCurrentFilePath();
+        const userSettings = getModuleSettings('file-import');
+
+        const relativePath = path.relative(sourceFileObj.dir, targetFilePath);
+
+        // src & target file is same
+        if (sourceFileObj.base === relativePath)
+          return vscode.window.showErrorMessage(
+            `File Import: src & target file cannot be same`
+          );
+
+        const targetFileExtension = path.parse(targetFilePath).ext;
+
+        // No need for file extension when source & target have same extension
+        const addFileExtension = userSettings.addFileExtension && sourceFileObj.ext !== targetFileExtension;
+
+        let output = addFileExtension ? relativePath : removeFileExtension(relativePath);
+
+        if (!output.startsWith("../")) {
+          output = `./${output}`;
+        }
+
+        if (userSettings.addQuotes) {
+          output = `"${output}"`;
+        }
+
+        // insert `output` at current cursor position
+        editor.edit((editBuilder) =>
+          editBuilder.replace(editor.selection, output)
+        );
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
   // const saveGroup = vscode.commands.registerCommand(
   //   "file-group.saveGroup",
   //   async () => {
@@ -363,7 +425,9 @@ export function activate(context: vscode.ExtensionContext) {
     deleteTagsTree,
     openTag,
     quickSwitch,
-    relatedFiles
+    relatedFiles,
+    copyFilePath,
+    pasteFilePath
     // saveGroup,
     // loadGroup,
   );
