@@ -1,66 +1,81 @@
 # File Ops
 
-> Easily tag/alias files & quick switch between files.
+> Import file path, tag/alias files & quick switch
 
 ## Overview
 
-**1. File Tag** - **Tag/Alias/Bookmark** files
+**1. File Import** - Paste relative path to other files
 
-**2. Quick Switch** - Quickly switch between files. ex. Switch between **example.css** & **example.js** using **`Ctrl/Cmd+E`**
+**2. File Tag** - **Tag/Alias/Bookmark** files
 
-**3. Switch to Related Files** - View files from the _current_ directory and _switch_
+**3. Quick Switch** - Switch between file pairs. ex. switch between **.css** & **.js** from same folder using **`Ctrl/Cmd+E`**
+
+**4. Related Files (same folder)** - View files from the **current** directory & **switch**
 
 [Watch Demo](https://youtu.be/ze9KtYe3f48)
 
 ## Features
 
+### File Import
+
+1. `File Import: Copy Path`: Copy absolute path from command menu or right click
+2. `File Import: Paste Path`: Paste the relative path using command menu or right click
+
 ### File Tag
 
-- Create, Open, Edit, Delete file tags using commands.
-- Open, View, Edit, Delete file tags from the tree view.
+- Create file aliases. open & view files using the aliases
+  1. Open, View, Edit, Delete file tags from the tree view, or
+  2. Perform operations using the commands. Search for `File Tag` to get all commands
 
-  ![File Tag Demo](assets/file-tag-demo.gif)
+> Note: All extension data is stored in an auto generated file called `.file-tag`  
+> Please do not make any changes to that file. If required, add it to `.gitignore`
+
+![File Tag Demo](assets/file-tag-demo.gif)
 
 ### Quick Switch
 
-Quickly switch between extension pairs. ex., Switch between `.css` & `.js` files in the same folder.
-_Extend the functionality by providing custom pairs._
+Quickly switch between file pairs. ex., Switch between `.css` & `.js` files from the same folder.
 
-**Note**: By default, `index.js` file is skipped so the file wont be considered for switch. Check `fileOps.fileSwitch.excludeFiles` to override.
+_Define custom pairs using the exposed setting (fileOps.fileSwitch.excludeFiles)_
+
+**Note**: By default, `index.js` file is excluded so it wont be considered for switching
 
 ![Quick Switch Demo](assets/quick-switch-demo.gif)
 
 ### Related Files
 
-View all the files from the current directory
+Show all files (except active file) from current folder
 
 ![Related Files Demo](assets/related-files-demo.gif)
 
-> Note: All extension data is stored in a file named `.file-tag` which gets created in root workspace directory. Please do not make any changes to that file.  
-> Add it to `.gitignore` based on the needs
+---
 
 ## Commands
 
-Run commands by opening Command Palette `Control+Shift+P` / `Command+Shift+P`
+Run commands by opening Command Palette `Ctrl+Shift+P` / `Cmd+Shift+P`
 
 ![File Tag Commands](assets/file-tag-commands.png)
 
 ![File Switch Commands](assets/file-switch-commands.png)
 
-## Keyboard Shortcuts
+## Shortcuts
 
-Quick Switch - `Command+E` / `Control+E`
+| Feature                 | Shortcut                       | Description                                                                           |
+| ----------------------- | ------------------------------ | ------------------------------------------------------------------------------------- |
+| Quick Switch            | `Cmd+E` / `Ctrl+E`             | Switch between file pairs. ex., switch between `.css` & `.js` file using the shortcut |
+| Related Files           | `Cmd+Shift+E` / `Ctrl+Shift+E` | Show all files (except active file) from current folder                               |
+| File Import: Copy Path  | `Cmd+Shift+C` / `Ctrl+Shift+C` | Copy absolute path of active file                                                     |
+| File Import: Paste Path | `Cmd+Shift+V` / `Ctrl+Shift+V` | Paste relative path to the `copied file`                                              |
 
-Show related files & switch - `Command+Shift+E` / `Control+Shift+E`
+## Settings
 
-## Extension Settings
+| Setting                             | Default value                                          | Description                                                                                                                                                                                                                            |
+| ----------------------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| fileOps.fileSwitch.quickSwitchPairs | `[".js,.ts/.css,.sass,.scss", ".js/.js", ".json/.md"]` | Define file pairs to enable switch between them.ex., `[".json/.md"]`) will enable switching between `.json` & `.md` using `Quick Switch` shortcut. Accepted regex for a pair: `/^(\.[a-z]+)(,(\.[a-z]+))*\/(\.[a-z]+)(,(\.[a-z]+))*$/` |
+| fileOps.fileSwitch.excludeFiles     | `["index.js"]`                                         | File names to be excluded from quick switch                                                                                                                                                                                            |
+| fileOps.fileImport.addQuotes        | `true`                                                 | Wrap the relative path in double quotes                                                                                                                                                                                                |
+| fileOps.fileImport.addFileExtension | `true`                                                 | Retain the file extension of relative path                                                                                                                                                                                             |
 
-This extension contributes the following settings:
+---
 
-- `fileOps.fileSwitch.quickSwitchPairs`: Array of **quick switch** pairs. ex., `[".js,.ts/.css,.scss"]`.
-
-  Accepted regex: `/^(\.[a-z]+)(,(\.[a-z]+))*\/(\.[a-z]+)(,(\.[a-z]+))*$/`
-
-> Defined values for `quickSwitchPairs` in the extension is `[".js,.ts/.css,.sass,.scss", ".js/.js", ".json/.md"]`. Please create an issue for the defined pairs you require & it will be added in default value list.
-
-- `fileOps.fileSwitch.excludeFiles`: Array of files names to exclude from quick switch. Default value is `["index.js"]`
+## Other projects

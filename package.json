@@ -88,15 +88,15 @@
 			},
 			{
 				"command": "file-tag.currentTag",
-				"title": "File Tag: Show current file tag"
+				"title": "File Tag: Show current File Tag"
 			},
 			{
 				"command": "file-tag.renameTag",
-				"title": "File Tag: Rename tag"
+				"title": "File Tag: Rename Tag"
 			},
 			{
 				"command": "file-tag.deleteTags",
-				"title": "File Tag: Delete tags"
+				"title": "File Tag: Delete Tags"
 			},
 			{
 				"command": "file-tag-tree.refreshData",
