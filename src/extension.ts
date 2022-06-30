@@ -19,7 +19,7 @@ import {
   parseCurrentFilePath,
   writeDataToClipboard,
   readDataFromClipboard,
-  removeFileExtension
+  getBasePath
 } from './helpers';
 import { FileTagProvider } from './FileTagProvider';
 import config from './config';
@@ -328,12 +328,12 @@ export function activate(context: vscode.ExtensionContext) {
             `File Import: src & target file cannot be same`
           );
 
-        const targetFileExtension = path.parse(targetFilePath).ext;
+        const targetFileObj = path.parse(targetFilePath);
 
         // No need for file extension when source & target have same extension
-        const addFileExtension = userSettings.addFileExtension && sourceFileObj.ext !== targetFileExtension;
+        const addFileExtension = userSettings.addFileExtension && sourceFileObj.ext !== targetFileObj.ext;
 
-        let output = addFileExtension ? relativePath : removeFileExtension(relativePath);
+        let output = getBasePath({ filePath: relativePath, targetFileObj, addFileExtension });
 
         if (!output.startsWith("../")) {
           output = `./${output}`;

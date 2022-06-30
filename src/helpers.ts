@@ -126,8 +126,16 @@ const readDataFromClipboard = () => vscode.env.clipboard.readText();
 
 const writeDataToClipboard = (data: any) => vscode.env.clipboard.writeText(data);
 
-const removeFileExtension = (filePath: string) => {
+const getBasePath = (obj: any) => {
+  const { filePath, targetFileObj, addFileExtension } = obj;
   const { dir, name } = path.parse(filePath);
+
+  const hasFolderInDir = /\w+$/.test(dir); // skip removing `index.js` file when the dir returns '../` and has no folder as part of the the path. This happens when you import a src `index.js` inside another target `index.js` and this target file is a child of the src `index.js` file.
+  if (targetFileObj.base === 'index.js' && hasFolderInDir)
+    return dir;
+
+  if (addFileExtension) return filePath;
+
   return path.join(dir, name);
 };
 
@@ -148,5 +156,5 @@ export {
   parseCurrentFilePath,
   writeDataToClipboard,
   readDataFromClipboard,
-  removeFileExtension
+  getBasePath
 };

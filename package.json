@@ -2,7 +2,7 @@
 	"name": "file-ops",
 	"displayName": "File Ops",
 	"description": "Easily tag/alias files & quick switch between files.",
-	"version": "1.1.0",
+	"version": "2.0.0",
 	"engines": {
 		"vscode": "^1.53.0"
 	},
@@ -18,12 +18,14 @@
 	"icon": "icons/icon.png",
 	"keywords": [
 		"productivity",
-		"tagging",
-		"quick-switch",
+		"vs-code",
+		"switch-files",
 		"file-operations",
 		"bookmark",
 		"alias",
-		"file-shortcuts"
+		"file-shortcuts",
+		"import-file",
+		"relative-path"
 	],
 	"activationEvents": [
 		"onCommand:file-tag.createTag",
@@ -88,15 +90,15 @@
 			},
 			{
 				"command": "file-tag.currentTag",
-				"title": "File Tag: Show current file tag"
+				"title": "File Tag: Show current File Tag"
 			},
 			{
 				"command": "file-tag.renameTag",
-				"title": "File Tag: Rename tag"
+				"title": "File Tag: Rename Tag"
 			},
 			{
 				"command": "file-tag.deleteTags",
-				"title": "File Tag: Delete tags"
+				"title": "File Tag: Delete Tags"
 			},
 			{
 				"command": "file-tag-tree.refreshData",
