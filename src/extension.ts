@@ -335,6 +335,9 @@ export function activate(context: vscode.ExtensionContext) {
 
         let output = getBasePath({ filePath: relativePath, targetFileObj, addFileExtension });
 
+        if (process.platform === 'win32')
+          output = output.replaceAll('\\', '/'); // convert all `\` to `/` for windows os
+
         if (!output.startsWith("../")) {
           output = `./${output}`;
         }
