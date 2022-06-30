@@ -1,6 +1,6 @@
 # File Ops
 
-> Import file path, tag/alias files & quick switch
+> VS Code extension to import file path, tag/alias files & quick switch
 
 ## Overview
 
@@ -20,6 +20,8 @@
 
 1. `File Import: Copy Path`: Copy absolute path from command menu or right click
 2. `File Import: Paste Path`: Paste the relative path using command menu or right click
+
+![File Import Demo](assets/file-import-demo.gif)
 
 ### File Tag
 

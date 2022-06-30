@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import { getWorkspacePath } from './helpers';
 import config from './config';
+
 export default class File {
   path: string = "";
   empty: boolean = false;

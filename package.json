@@ -1,7 +1,7 @@
 {
 	"name": "file-ops",
 	"displayName": "File Ops",
-	"description": "Easily tag/alias files & quick switch between files.",
+	"description": "VS Code extension to import file path, tag/alias files & quick switch",
 	"version": "2.0.0",
 	"engines": {
 		"vscode": "^1.53.0"
