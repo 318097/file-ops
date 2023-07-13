@@ -366,68 +366,64 @@ export function activate(context: vscode.ExtensionContext) {
       }
     });
 
-  // const saveGroup = vscode.commands.registerCommand(
-  //   "file-group.saveGroup",
-  //   async () => {
-  //     try {
-  //       const file = new File();
-  //       const name = await vscode.window.showInputBox({
-  //         placeHolder: "Group name",
-  //       });
+  const saveGroup = vscode.commands.registerCommand(
+    "file-group.saveGroup",
+    async () => {
+      try {
+        const file = new File();
+        const name = await vscode.window.showInputBox({
+          placeHolder: "Group name",
+        });
 
-  //       const openFilePaths = vscode.workspace.textDocuments;
-  //       console.log("window.activeTextEditor", vscode.window.activeTextEditor);
-  //       console.log("window.visibleTextEditors", vscode.window.visibleTextEditors);
+        const openFilePaths = vscode.workspace.textDocuments;
 
-  //       const filteredFilePaths = openFilePaths
-  //         .map((file) => {
-  //           console.log(file, file.fileName, cleanFilePath(file.fileName));
-  //           return cleanFilePath(file.fileName);
-  //         })
-  //         .filter((path) => !path.endsWith(".git"));
+        console.log({ visibleTextEditors: vscode.window.visibleTextEditors, activeTextEditor: vscode.window.activeTextEditor, textDocuments: vscode.workspace.textDocuments });
+        console.log('---------')
+        const filteredFilePaths = openFilePaths
+          .map((file) => {
+            console.log(file, file.fileName, cleanFilePath(file.fileName));
+            return cleanFilePath(file.fileName);
+          })
+          .filter((path) => !path.endsWith(".git"));
 
-  //       file.addGroup({
-  //         name: name || "Untitled group",
-  //         files: filteredFilePaths,
-  //       });
+        file.addGroup({
+          name: name || "Untitled group",
+          files: filteredFilePaths,
+        });
 
-  //       vscode.window.showInformationMessage(
-  //         `File Group: Group created`
-  //       );
-  //     } catch (err) {
-  //       console.log("Error: ", err);
-  //     }
-  //   }
-  // );
+        vscode.window.showInformationMessage(
+          `File Group: Group created`
+        );
+      } catch (err) {
+        console.log("Error: ", err);
+      }
+    }
+  );
 
-  // const loadGroup = vscode.commands.registerCommand(
-  //   "file-group.loadGroup",
-  //   async () => {
-  //     try {
+  const loadGroup = vscode.commands.registerCommand(
+    "file-group.loadGroup",
+    async () => {
+      try {
+        const file = new File();
 
-  //       const file = new File();
+        const { list } = parseGroupData(file.groups);
+        const selectedIdx = await showDropdown(list, {
+          placeHolder: "Select group to load",
+        });
 
-  //       const { list } = parseGroupData(file.groups);
-  //       const selectedIdx = await showDropdown(list, {
-  //         placeHolder: "Select group to rename:",
-  //       });
-  //       if (isFalsy(selectedIdx)) return;
+        if (isFalsy(selectedIdx)) return;
 
-  //       await vscode.commands.executeCommand("workbench.action.closeAllEditors");
+        // await vscode.commands.executeCommand("workbench.action.closeAllEditors");
 
-  //       const fileList = file.groups[selectedIdx]['files'];
+        const fileList = file.groups[selectedIdx]['files'];
 
-  //       fileList.forEach(async (file: any) => {
-  //         const handler = await vscode.workspace.openTextDocument(openFile(file));
-  //         vscode.window.showTextDocument(handler, {
-  //           preserveFocus: false,
-  //           preview: false,
-  //         });
-  //       });
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   });
+        fileList.forEach(async (file: any) => {
+          openFile(file, undefined);
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    });
 
   context.subscriptions.push(
     createTag,
@@ -442,9 +438,9 @@ export function activate(context: vscode.ExtensionContext) {
     relatedFiles,
     copyFilePath,
     pasteFilePath,
-    copyFileName
-    // saveGroup,
-    // loadGroup,
+    copyFileName,
+    saveGroup,
+    loadGroup,
   );
 }
 

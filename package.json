@@ -39,7 +39,9 @@
 		"onCommand:file-switch.quickSwitch",
 		"onCommand:file-import.pasteFilePath",
 		"onCommand:file-import.copyFilePath",
-		"onCommand:file-ops.copyFileName"
+		"onCommand:file-ops.copyFileName",
+		"onCommand:file-group.saveGroup",
+		"onCommand:file-group.loadGroup"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -139,6 +141,14 @@
 			{
 				"command": "file-ops.copyFileName",
 				"title": "File Ops: Copy File Name"
+			},
+			{
+				"command": "file-group.saveGroup",
+				"title": "File Group: Save"
+			},
+			{
+				"command": "file-group.loadGroup",
+				"title": "File Group: Load"
 			}
 		],
 		"views": {
