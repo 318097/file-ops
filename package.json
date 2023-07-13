@@ -38,7 +38,8 @@
 		"onCommand:file-switch.relatedFiles",
 		"onCommand:file-switch.quickSwitch",
 		"onCommand:file-import.pasteFilePath",
-		"onCommand:file-import.copyFilePath"
+		"onCommand:file-import.copyFilePath",
+		"onCommand:file-ops.copyFileName"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -69,6 +70,10 @@
 				}
 			],
 			"editor/context": [
+				{
+					"command": "file-ops.copyFileName",
+					"group": "9_cutcopypaste"
+				},
 				{
 					"command": "file-import.copyFilePath",
 					"group": "9_cutcopypaste"
@@ -130,6 +135,10 @@
 			{
 				"command": "file-import.pasteFilePath",
 				"title": "File Import: Paste Path"
+			},
+			{
+				"command": "file-ops.copyFileName",
+				"title": "File Ops: Copy File Name"
 			}
 		],
 		"views": {

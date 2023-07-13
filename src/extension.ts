@@ -295,6 +295,17 @@ export function activate(context: vscode.ExtensionContext) {
     }
   });
 
+  const copyFileName = vscode.commands.registerTextEditorCommand(
+    'file-ops.copyFileName',
+    async () => {
+      try {
+        const { currentFileName } = getCurrentFileInfo();
+        writeDataToClipboard(currentFileName);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
   const copyFilePath = vscode.commands.registerTextEditorCommand(
     'file-import.copyFilePath',
     async () => {
@@ -430,7 +441,8 @@ export function activate(context: vscode.ExtensionContext) {
     quickSwitch,
     relatedFiles,
     copyFilePath,
-    pasteFilePath
+    pasteFilePath,
+    copyFileName
     // saveGroup,
     // loadGroup,
   );
