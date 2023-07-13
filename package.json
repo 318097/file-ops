@@ -198,7 +198,7 @@
 				},
 				"fileOps.fileImport.addQuotes": {
 					"type": "boolean",
-					"default": true,
+					"default": false,
 					"description": "Add quotes for 'File Import: Paste Path'"
 				},
 				"fileOps.fileImport.addFileExtension": {
