@@ -62,7 +62,7 @@ const showDropdown = async (list: Array<any>, options: any): Promise<number | un
   return multiSelect ? selectedIdx : selectedIdx[0];
 };
 
-const openFile = async (relativePath: string, name: string | undefined) => {
+const openFile = async (relativePath: string) => {
   const fd = await vscode.workspace.openTextDocument(
     getAbsolutePath(relativePath)
   );
@@ -70,9 +70,6 @@ const openFile = async (relativePath: string, name: string | undefined) => {
     preserveFocus: false,
     preview: false,
   });
-  if (name) {
-    await vscode.window.showInformationMessage(`Tag:${name}`);
-  }
 };
 
 const getCurrentFileInfo = () => {

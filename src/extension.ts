@@ -75,7 +75,8 @@ export function activate(context: vscode.ExtensionContext) {
         // @ts-ignore
         const [relativePath, { name }] = entries[selectedIdx];
 
-        openFile(relativePath, name);
+        openFile(relativePath);
+        vscode.window.showInformationMessage(`Tag:${name}`);
       } catch (err) {
         console.log(err);
       }
@@ -103,7 +104,8 @@ export function activate(context: vscode.ExtensionContext) {
     async (relativePath, tagName) => {
       try {
         if (!relativePath) return;
-        openFile(relativePath, tagName);
+        openFile(relativePath);
+        vscode.window.showInformationMessage(`Tag:${tagName}`);
       } catch (err) {
         console.log(err);
       }
