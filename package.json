@@ -41,7 +41,8 @@
 		"onCommand:file-import.copyFilePath",
 		"onCommand:file-ops.copyFileName",
 		"onCommand:file-group.saveGroup",
-		"onCommand:file-group.loadGroup"
+		"onCommand:file-group.loadGroup",
+		"onCommand:file-ops.toggleCase"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -149,6 +150,10 @@
 			{
 				"command": "file-group.loadGroup",
 				"title": "File Group: Load"
+			},
+			{
+				"command": "file-ops.toggleCase",
+				"title": "File Ops: Toggle Case"
 			}
 		],
 		"views": {
@@ -239,5 +244,8 @@
 		"mocha": "^8.2.1",
 		"typescript": "^4.1.3",
 		"vscode-test": "^1.5.0"
+	},
+	"dependencies": {
+		"lodash": "^4.17.21"
 	}
 }

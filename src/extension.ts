@@ -9,7 +9,7 @@ import {
   getCurrentFilePath,
   showDropdown,
   parseTagData,
-  parseGroupData,
+  showPicker,
   cleanFilePath,
   openFile,
   getCurrentFileInfo,
@@ -19,10 +19,12 @@ import {
   parseCurrentFilePath,
   writeDataToClipboard,
   readDataFromClipboard,
-  getBasePath
+  getBasePath,
+  switchCase
 } from './helpers';
 import { FileTagProvider } from './FileTagProvider';
 import config from './config';
+const _ = require('lodash');
 
 const fsPromises = require('fs').promises;
 
@@ -408,10 +410,7 @@ export function activate(context: vscode.ExtensionContext) {
       try {
         const file = new File();
 
-        const { list } = parseGroupData(file.groups);
-        const selectedIdx = await showDropdown(list, {
-          placeHolder: "Select group to load",
-        });
+        const selectedIdx = await showPicker({ data: _.map(file.groups, 'name'), placeHolder: "Select group to load" });
 
         if (isFalsy(selectedIdx)) return;
 
@@ -421,6 +420,48 @@ export function activate(context: vscode.ExtensionContext) {
 
         fileList.forEach(async (file: any) => {
           openFile(file, undefined);
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+  const toggleCase = vscode.commands.registerCommand(
+    "file-ops.toggleCase",
+    async () => {
+      try {
+        const CASES = [
+          { name: 'UPPERCASE', value: "UPPERCASE" },
+          { name: 'lowercase', value: "LOWERCASE" },
+          { name: 'kebab-case', value: "KEBABCASE" },
+          { name: 'snake_case', value: "SNAKECASE" },
+          { name: 'camelCase', value: "CAMELCASE" },
+          { name: 'Capitalize', value: "CAPITALIZE" },
+          { name: 'Trim & Replace spaces with underscore ;)', value: "TRIM_AND_REPLACE_WITH_UNDERSCORE" },
+          { name: 'Remove spaces ;)', value: "REMOVE_SPACES" },
+        ];
+
+        const selectedIdx = await showPicker({ data: _.map(CASES, 'name'), placeHolder: "Select group to load" });
+
+        let editor = vscode.window.activeTextEditor,
+          document = editor.document,
+          selections = editor.selections;
+
+        editor.edit(function (editBuilder) {
+          selections.forEach(function (selection) {
+            if (!selection.isSingleLine) {
+              return;
+            }
+
+            let range = new vscode.Range(selection.start, selection.end);
+
+            if (!selection.isEmpty && selection.isSingleLine) {
+              editBuilder.replace(
+                selection,
+                switchCase(document.getText(range), CASES[selectedIdx]['value'])
+              );
+            }
+          });
         });
       } catch (err) {
         console.log(err);
@@ -443,6 +484,7 @@ export function activate(context: vscode.ExtensionContext) {
     copyFileName,
     saveGroup,
     loadGroup,
+    toggleCase
   );
 }
 
