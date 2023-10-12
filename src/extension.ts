@@ -107,11 +107,10 @@ export function activate(context: vscode.ExtensionContext) {
 
   const openTag = vscode.commands.registerCommand(
     "file-tag.openTag",
-    async (relativePath, tagName) => {
+    async (relativePath) => {
       try {
         if (!relativePath) return;
         openFile(relativePath);
-        vscode.window.showInformationMessage(`Tag:${tagName}`);
       } catch (err) {
         console.log(err);
       }
@@ -207,7 +206,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   const quickSwitch = vscode.commands.registerCommand('file-switch.quickSwitch', async () => {
     try {
-      const pairRegex = /^(\.[a-z]+)(,(\.[a-z]+))*\/(\.[a-z]+)(,(\.[a-z]+))*$/;
+      const pairRegex = /^([a-zA-Z._-]+)(,([a-zA-Z._-]+))*\/([a-zA-Z._-]+)(,([a-zA-Z._-]+))*$/;
 
       const userDefinedSettings = vscode.workspace.getConfiguration('fileOps');
       const USER_DEFINED_PAIRS: any = userDefinedSettings.get('fileSwitch.quickSwitchPairs');
@@ -215,7 +214,7 @@ export function activate(context: vscode.ExtensionContext) {
 
       const PAIRS = [...USER_DEFINED_PAIRS, ...config.QUICK_SWITCH_PAIRS];
       const {
-        directoryPath, extensionName, currentFileName } = getCurrentFileInfo();
+        directoryPath, currentFileName } = getCurrentFileInfo();
 
       for (const pair of PAIRS) {
         const isValidPair = pairRegex.test(pair);
@@ -231,21 +230,20 @@ export function activate(context: vscode.ExtensionContext) {
 
         let activePair: any;
 
-        if (pair1.includes(extensionName)) activePair = pair2;
-        else if (pair2.includes(extensionName)) activePair = pair1;
+        if (pair1.some(pair => currentFileName.endsWith(pair))) activePair = pair2;
+        else if (pair2.some(pair => currentFileName.endsWith(pair))) activePair = pair1;
         else continue;
 
-        const fileList = await fsPromises.readdir(directoryPath);
+        const currentDirFiles = await fsPromises.readdir(directoryPath);
 
-        const matchedFiles = fileList.filter((fileName: any) => {
+        const matchedFiles = currentDirFiles.filter((fileName: any) => {
           if (fileName === currentFileName ||
             USER_DEFINED_EXCLUDE_FILES.includes(fileName))
             return false;
 
           let match = false;
           for (let i = 0; i < activePair.length; i++) {
-            const ext = activePair[i];
-            if (fileName.endsWith(ext)) {
+            if (fileName.endsWith(activePair[i])) {
               match = true;
               break;
             }
@@ -258,7 +256,7 @@ export function activate(context: vscode.ExtensionContext) {
           break;
         } else if (matchedFiles.length > 1) {
           const fileName = await vscode.window.showQuickPick(matchedFiles, {
-            placeHolder: "Matched files:",
+            placeHolder: "Matched files",
           });
 
           if (fileName)
