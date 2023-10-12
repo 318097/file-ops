@@ -193,6 +193,28 @@
 				"key": "ctrl+shift+v",
 				"mac": "cmd+shift+v",
 				"when": "editorTextFocus && resourceExtname != .md"
+			},
+			{
+				"key": "alt+cmd+e",
+				"command": "runCommands",
+				"args": {
+					"commands": [
+						"toggleFindCaseSensitive",
+						"toggleFindWholeWord"
+					]
+				},
+				"when": "!editorReadonly"
+			},
+			{
+				"key": "alt+cmd+e",
+				"command": "runCommands",
+				"args": {
+					"commands": [
+						"toggleSearchCaseSensitive",
+						"toggleSearchWholeWord"
+					]
+				},
+				"when": "searchViewletFocus"
 			}
 		],
 		"configuration": {
