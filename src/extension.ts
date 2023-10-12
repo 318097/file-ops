@@ -20,7 +20,8 @@ import {
   writeDataToClipboard,
   readDataFromClipboard,
   getBasePath,
-  switchCase
+  switchCase,
+  getFileShortName
 } from './helpers';
 import { FileTagProvider } from './FileTagProvider';
 import config from './config';
@@ -47,11 +48,13 @@ export function activate(context: vscode.ExtensionContext) {
 
         const doesTagExist = file.tags[filePath];
 
-        const name = await vscode.window.showInputBox({
-          placeHolder: doesTagExist ? `Tag exists. Enter new tag name to override` : `Enter tag name:`,
+        let name = await vscode.window.showInputBox({
+          prompt: doesTagExist ? `Tag exists. Enter new tag name to override` : `Enter tag name`,
         });
 
-        if (!name) return;
+        if (!name && !doesTagExist) {
+          name = getFileShortName();
+        };
 
         file.tags[filePath] = getDefaultFileTagObj(name);
         file.save();
@@ -78,7 +81,7 @@ export function activate(context: vscode.ExtensionContext) {
         const [relativePath, { name }] = entries[selectedIdx];
 
         openFile(relativePath);
-        vscode.window.showInformationMessage(`Tag:${name}`);
+        vscode.window.showInformationMessage(`Tag: ${name}`);
       } catch (err) {
         console.log(err);
       }
@@ -419,7 +422,7 @@ export function activate(context: vscode.ExtensionContext) {
         const fileList = file.groups[selectedIdx]['files'];
 
         fileList.forEach(async (file: any) => {
-          openFile(file, undefined);
+          openFile(file);
         });
       } catch (err) {
         console.log(err);
