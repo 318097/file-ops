@@ -21,6 +21,7 @@ import {
   readDataFromClipboard,
   getBasePath,
   switchCase,
+  updateSelectedText,
   getFileShortName
 } from './helpers';
 import { FileTagProvider } from './FileTagProvider';
@@ -440,31 +441,33 @@ export function activate(context: vscode.ExtensionContext) {
           { name: 'snake_case', value: "SNAKECASE" },
           { name: 'camelCase', value: "CAMELCASE" },
           { name: 'Capitalize', value: "CAPITALIZE" },
-          { name: 'Trim & Replace spaces with underscore ;)', value: "TRIM_AND_REPLACE_WITH_UNDERSCORE" },
-          { name: 'Remove spaces ;)', value: "REMOVE_SPACES" },
+          { name: 'Trim & Replace spaces with underscore', value: "TRIM_AND_REPLACE_WITH_UNDERSCORE" },
+          { name: 'Remove spaces', value: "REMOVE_SPACES" },
         ];
 
-        const selectedIdx = await showPicker({ data: _.map(CASES, 'name'), placeHolder: "Select group to load" });
+        const selectedIdx = await showPicker({ data: _.map(CASES, 'name'), placeHolder: "Select case to convert to" });
 
-        let editor = vscode.window.activeTextEditor,
-          document = editor.document,
-          selections = editor.selections;
+        updateSelectedText(text => switchCase(text, CASES[selectedIdx]['value']));
+      } catch (err) {
+        console.log(err);
+      }
+    });
 
-        editor.edit(function (editBuilder) {
-          selections.forEach(function (selection) {
-            if (!selection.isSingleLine) {
-              return;
-            }
-
-            let range = new vscode.Range(selection.start, selection.end);
-
-            if (!selection.isEmpty && selection.isSingleLine) {
-              editBuilder.replace(
-                selection,
-                switchCase(document.getText(range), CASES[selectedIdx]['value'])
-              );
-            }
-          });
+  const stringify = vscode.commands.registerCommand(
+    "file-ops.stringify",
+    async () => {
+      try {
+        updateSelectedText(text => {
+          let result = text;
+          try {
+            const parsed = eval(`(${text})`);
+            // console.log('text::-', text);
+            // console.log('parsed::-', parsed, typeof parsed);
+            result = JSON.stringify(parsed);
+          } catch (err) {
+            vscode.window.showErrorMessage(`Selected range could not be stringified.`);
+          }
+          return result;
         });
       } catch (err) {
         console.log(err);
@@ -487,7 +490,8 @@ export function activate(context: vscode.ExtensionContext) {
     copyFileName,
     saveGroup,
     loadGroup,
-    toggleCase
+    toggleCase,
+    stringify
   );
 }
 

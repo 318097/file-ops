@@ -42,7 +42,8 @@
 		"onCommand:file-ops.copyFileName",
 		"onCommand:file-group.saveGroup",
 		"onCommand:file-group.loadGroup",
-		"onCommand:file-ops.toggleCase"
+		"onCommand:file-ops.toggleCase",
+		"onCommand:file-ops.stringify"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -154,6 +155,10 @@
 			{
 				"command": "file-ops.toggleCase",
 				"title": "File Ops: Toggle Case"
+			},
+			{
+				"command": "file-ops.stringify",
+				"title": "File Ops: JSON.stringify"
 			}
 		],
 		"views": {

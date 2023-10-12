@@ -160,6 +160,36 @@ const switchCase = (text, caseType) => {
   }
 };
 
+const updateSelectedText = (cb) => {
+  let editor = vscode.window.activeTextEditor,
+    document = editor.document,
+    selections = editor.selections;
+
+  editor.edit(function (editBuilder) {
+    selections.forEach(function (selection) {
+      // if (!selection.isSingleLine) {
+      //   return;
+      // }
+
+      let range = new vscode.Range(selection.start, selection.end);
+
+      // if (!selection.isEmpty && selection.isSingleLine) {
+      editBuilder.replace(
+        selection,
+        cb(document.getText(range))
+      );
+      // }
+    });
+  });
+};
+
+const getFileShortName = () => {
+  const parsed = parseCurrentFilePath();
+
+  const foldersBreakdown = parsed.dir.replace(/\\/g, '/').split('/');
+  return `../${_.last(foldersBreakdown)}/${parsed.base}`;
+};
+
 export {
   getDefaultFileTagObj,
   getWorkspacePath,
@@ -178,5 +208,7 @@ export {
   writeDataToClipboard,
   readDataFromClipboard,
   getBasePath,
-  switchCase
+  switchCase,
+  updateSelectedText,
+  getFileShortName
 };
