@@ -38,7 +38,12 @@
 		"onCommand:file-switch.relatedFiles",
 		"onCommand:file-switch.quickSwitch",
 		"onCommand:file-import.pasteFilePath",
-		"onCommand:file-import.copyFilePath"
+		"onCommand:file-import.copyFilePath",
+		"onCommand:file-ops.copyFileName",
+		"onCommand:file-group.saveGroup",
+		"onCommand:file-group.loadGroup",
+		"onCommand:file-ops.toggleCase",
+		"onCommand:file-ops.stringify"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -69,6 +74,10 @@
 				}
 			],
 			"editor/context": [
+				{
+					"command": "file-ops.copyFileName",
+					"group": "9_cutcopypaste"
+				},
 				{
 					"command": "file-import.copyFilePath",
 					"group": "9_cutcopypaste"
@@ -130,6 +139,26 @@
 			{
 				"command": "file-import.pasteFilePath",
 				"title": "File Import: Paste Path"
+			},
+			{
+				"command": "file-ops.copyFileName",
+				"title": "File Ops: Copy File Name"
+			},
+			{
+				"command": "file-group.saveGroup",
+				"title": "File Group: Save"
+			},
+			{
+				"command": "file-group.loadGroup",
+				"title": "File Group: Load"
+			},
+			{
+				"command": "file-ops.toggleCase",
+				"title": "File Ops: Toggle Case"
+			},
+			{
+				"command": "file-ops.stringify",
+				"title": "File Ops: JSON.stringify"
 			}
 		],
 		"views": {
@@ -164,6 +193,28 @@
 				"key": "ctrl+shift+v",
 				"mac": "cmd+shift+v",
 				"when": "editorTextFocus && resourceExtname != .md"
+			},
+			{
+				"key": "alt+cmd+e",
+				"command": "runCommands",
+				"args": {
+					"commands": [
+						"toggleFindCaseSensitive",
+						"toggleFindWholeWord"
+					]
+				},
+				"when": "!editorReadonly"
+			},
+			{
+				"key": "alt+cmd+e",
+				"command": "runCommands",
+				"args": {
+					"commands": [
+						"toggleSearchCaseSensitive",
+						"toggleSearchWholeWord"
+					]
+				},
+				"when": "searchViewletFocus"
 			}
 		],
 		"configuration": {
@@ -189,7 +240,7 @@
 				},
 				"fileOps.fileImport.addQuotes": {
 					"type": "boolean",
-					"default": true,
+					"default": false,
 					"description": "Add quotes for 'File Import: Paste Path'"
 				},
 				"fileOps.fileImport.addFileExtension": {
@@ -220,5 +271,8 @@
 		"mocha": "^8.2.1",
 		"typescript": "^4.1.3",
 		"vscode-test": "^1.5.0"
+	},
+	"dependencies": {
+		"lodash": "^4.17.21"
 	}
 }

@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+const _ = require('lodash');
 
 const getDefaultFileTagObj = (name: string) => ({
   name,
@@ -19,9 +20,12 @@ const parseTagData = (data) => {
   return { entries, list };
 };
 
-const parseGroupData = (data = []) => {
-  const list = data.map(({ name }, index) => `${index + 1}. ${name}`);
-  return { list };
+const showPicker = async ({ data = [], placeHolder = '' }) => {
+  const options = data.map((item, index) => `${index + 1}. ${item}`);
+  const selectedIdx = await showDropdown(options, {
+    placeHolder
+  });
+  return selectedIdx;
 };
 
 const getAbsolutePath = (relative: string) => {
@@ -48,7 +52,6 @@ const isFalsy = (value: any) => {
 };
 
 const showDropdown = async (list: Array<any>, options: any): Promise<number | undefined | Array<number>> => {
-  const multiSelect = options.canPickMany;
   const selected = await vscode.window.showQuickPick(list, options);
 
   const selectedOptions = [].concat(selected || []);
@@ -59,10 +62,10 @@ const showDropdown = async (list: Array<any>, options: any): Promise<number | un
   const selectedIdx = selectedOptions.map(
     (selected) => Number(selected.split(".")[0]) - 1
   );
-  return multiSelect ? selectedIdx : selectedIdx[0];
+  return options.canPickMany ? selectedIdx : selectedIdx[0];
 };
 
-const openFile = async (relativePath: string, name: string | undefined) => {
+const openFile = async (relativePath: string) => {
   const fd = await vscode.workspace.openTextDocument(
     getAbsolutePath(relativePath)
   );
@@ -70,9 +73,6 @@ const openFile = async (relativePath: string, name: string | undefined) => {
     preserveFocus: false,
     preview: false,
   });
-  if (name) {
-    await vscode.window.showInformationMessage(`Tag:${name}`);
-  }
 };
 
 const getCurrentFileInfo = () => {
@@ -139,6 +139,57 @@ const getBasePath = (obj: any) => {
   return path.join(dir, name);
 };
 
+const switchCase = (text, caseType) => {
+  switch (caseType) {
+    case "UPPERCASE":
+      return _.toUpper(text);
+    case "LOWERCASE":
+      return _.toLower(text);
+    case "KEBABCASE":
+      return _.kebabCase(text);
+    case "SNAKECASE":
+      return _.snakeCase(text);
+    case "CAMELCASE":
+      return _.camelCase(text);
+    case "CAPITALIZE":
+      return _.capitalize(text);
+    case "TRIM_AND_REPLACE_WITH_UNDERSCORE":
+      return _.replace(_.trim(text), /\s+/g, '_');
+    case "REMOVE_SPACES":
+      return _.replace(text, /\s/g, '');
+  }
+};
+
+const updateSelectedText = (cb) => {
+  let editor = vscode.window.activeTextEditor,
+    document = editor.document,
+    selections = editor.selections;
+
+  editor.edit(function (editBuilder) {
+    selections.forEach(function (selection) {
+      // if (!selection.isSingleLine) {
+      //   return;
+      // }
+
+      let range = new vscode.Range(selection.start, selection.end);
+
+      // if (!selection.isEmpty && selection.isSingleLine) {
+      editBuilder.replace(
+        selection,
+        cb(document.getText(range))
+      );
+      // }
+    });
+  });
+};
+
+const getFileShortName = () => {
+  const parsed = parseCurrentFilePath();
+
+  const foldersBreakdown = parsed.dir.replace(/\\/g, '/').split('/');
+  return `../${_.last(foldersBreakdown)}/${parsed.base}`;
+};
+
 export {
   getDefaultFileTagObj,
   getWorkspacePath,
@@ -146,7 +197,7 @@ export {
   getCurrentFilePath,
   showDropdown,
   parseTagData,
-  parseGroupData,
+  showPicker,
   cleanFilePath,
   openFile,
   getCurrentFileInfo,
@@ -156,5 +207,8 @@ export {
   parseCurrentFilePath,
   writeDataToClipboard,
   readDataFromClipboard,
-  getBasePath
+  getBasePath,
+  switchCase,
+  updateSelectedText,
+  getFileShortName
 };
