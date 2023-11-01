@@ -3,12 +3,11 @@ import * as path from 'path';
 import * as fs from 'fs';
 import File from './File';
 import {
-  getDefaultFileTagObj,
+  createBookmarkObj,
   getWorkspacePath,
-  getAbsolutePath,
   getCurrentFilePath,
   showDropdown,
-  parseTagData,
+  parseBookmarks,
   showPicker,
   cleanFilePath,
   openFile,
@@ -24,110 +23,109 @@ import {
   updateSelectedText,
   getFileShortName
 } from './helpers';
-import { FileTagProvider } from './FileTagProvider';
+import { FileBookmarksProvider } from './FileBookmarksProvider';
+// import { FileClipboardProvider } from './FileClipboardProvider';
 import config from './config';
-const _ = require('lodash');
 
+const _ = require('lodash');
 const fsPromises = require('fs').promises;
 
 export function activate(context: vscode.ExtensionContext) {
-
-  const fileTagProvider = new FileTagProvider(getWorkspacePath());
-
-  vscode.window.registerTreeDataProvider('file-tag-tree', fileTagProvider);
-
-  vscode.commands.registerCommand('file-tag-tree.refreshData', () =>
-    fileTagProvider.refresh()
+  const fileBookmarksProvider = new FileBookmarksProvider(getWorkspacePath());
+  vscode.window.registerTreeDataProvider('bookmarksTree', fileBookmarksProvider);
+  vscode.commands.registerCommand('bookmarksTree.refreshData', () =>
+    fileBookmarksProvider.refresh()
   );
 
-  const createTag = vscode.commands.registerCommand(
-    "file-tag.createTag",
-    async () => {
-      try {
-        const file = new File();
-        const filePath = getCurrentFilePath();
+  // const fileClipboardProvider = new FileClipboardProvider(getWorkspacePath());
+  // vscode.window.registerTreeDataProvider('file-clipboard-tree', fileClipboardProvider);
 
-        const doesTagExist = file.tags[filePath];
-
-        let name = await vscode.window.showInputBox({
-          prompt: doesTagExist ? `Tag exists. Enter new tag name to override` : `Enter tag name`,
-        });
-
-        if (!name && !doesTagExist) {
-          name = getFileShortName();
-        };
-
-        file.tags[filePath] = getDefaultFileTagObj(name);
-        file.save();
-        vscode.window.showInformationMessage(`File Tag: Tag ${doesTagExist ? 'updated' : 'created'}.`);
-        fileTagProvider.refresh();
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  );
-
-  const listTags = vscode.commands.registerCommand(
-    "file-tag.listTags",
-    async () => {
-      try {
-        const file = new File();
-        const { entries, list } = parseTagData(file.tags);
-
-        const selectedIdx = await showDropdown(list, {
-          placeHolder: "Select tag to open",
-        });
-        if (isFalsy(selectedIdx)) return;
-        // @ts-ignore
-        const [relativePath, { name }] = entries[selectedIdx];
-
-        openFile(relativePath);
-        vscode.window.showInformationMessage(`Tag: ${name}`);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  );
-
-  const currentTag = vscode.commands.registerCommand(
-    "file-tag.currentTag",
-    async () => {
-      try {
-        const file = new File();
-        const filePath = getCurrentFilePath();
-        const { name } = file.tags[filePath] || {};
-        vscode.window.showInformationMessage(
-          `File Tag: ${name || "No file tag."}`
-        );
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  );
-
-  const openTag = vscode.commands.registerCommand(
-    "file-tag.openTag",
-    async (relativePath) => {
-      try {
-        if (!relativePath) return;
-        openFile(relativePath);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  );
-
-  const deleteTagHandler = async (treeItem: any) => {
+  const createBookmark = async () => {
     try {
       const file = new File();
-      const { entries, list } = parseTagData(file.tags);
+      const filePath = getCurrentFilePath();
+
+      const doesTagExist = file.tags[filePath];
+
+      let name = await vscode.window.showInputBox({
+        prompt: doesTagExist ? `Bookmark exists. Enter new name to override` : `Enter bookmark name`,
+      });
+
+      if (!name && !doesTagExist)
+        name = getFileShortName();
+
+      file.tags[filePath] = createBookmarkObj(name);
+      file.save();
+      fileBookmarksProvider.refresh();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const showBookmarks = async () => {
+    try {
+      const file = new File();
+      const { entries, list } = parseBookmarks(file.tags);
+
+      const selectedIdx = await showDropdown(list, {
+        placeHolder: "Select bookmark",
+      });
+      if (isFalsy(selectedIdx)) return;
+      // @ts-ignore
+      const [relativePath, { name }] = entries[selectedIdx];
+
+      openFile(relativePath);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const showCurrentBookmark = async () => {
+    try {
+      const file = new File();
+      const filePath = getCurrentFilePath();
+      const { name } = file.tags[filePath] || {};
+      vscode.window.showInformationMessage(
+        `FileOps: ${name || "No bookmark for this file."}`
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const openBookmark = async (relativePath) => {
+    try {
+      if (!relativePath) return;
+      openFile(relativePath);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // vscode.commands.registerCommand(
+  //   "file-ops.copyToClipboard",
+  //   async (clipboardItem) => {
+  //     try {
+  //       writeDataToClipboard(clipboardItem);
+
+  //       vscode.commands.executeCommand('workbench.action.findInFiles', { query: clipboardItem, triggerSearch: true });
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   }
+  // );
+
+  const deleteBookmarkHandler = async (treeItem: any) => {
+    try {
+      const file = new File();
+      const { entries, list } = parseBookmarks(file.tags);
       if (treeItem) {
         const path = treeItem.filePath;
         delete file.tags[path];
       } else {
         const selectedIdx = await showDropdown(list, {
           canPickMany: true,
-          placeHolder: "Select tag(s) to delete:",
+          placeHolder: "Select bookmark(s) to delete",
         });
 
         if (isFalsy(selectedIdx)) return;
@@ -140,24 +138,13 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       file.save();
-      fileTagProvider.refresh();
+      fileBookmarksProvider.refresh();
     } catch (err) {
       console.log(err);
     }
   };
 
-  const deleteTags = vscode.commands.registerCommand(
-    "file-tag.deleteTags",
-    deleteTagHandler
-  );
-
-
-  const deleteTagsTree = vscode.commands.registerCommand(
-    "file-tag-tree.deleteTags",
-    deleteTagHandler
-  );
-
-  const renameTagHandler = async (treeItem: any) => {
+  const renameBookmarkHandler = async (treeItem: any) => {
     try {
       const file = new File();
       let relativePath, newTagName;
@@ -165,10 +152,10 @@ export function activate(context: vscode.ExtensionContext) {
       if (treeItem) {
         relativePath = treeItem.filePath;
       } else {
-        const { entries, list } = parseTagData(file.tags);
+        const { entries, list } = parseBookmarks(file.tags);
 
         const selectedIdx = await showDropdown(list, {
-          placeHolder: "Select tag to rename:",
+          placeHolder: "Select bookmark to rename",
         });
 
         if (isFalsy(selectedIdx)) return;
@@ -177,7 +164,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       newTagName = await vscode.window.showInputBox({
-        placeHolder: "Enter new tag name:",
+        placeHolder: "Enter new bookmark name",
       });
 
       if (!newTagName) return;
@@ -187,24 +174,15 @@ export function activate(context: vscode.ExtensionContext) {
         name: newTagName,
         updatedAt: new Date().getTime(),
       };
-      file.save();
 
-      fileTagProvider.refresh();
-      vscode.window.showInformationMessage(`File Tag: Tag renamed.`);
+      file.save();
+      fileBookmarksProvider.refresh();
     } catch (err) {
       console.log(err);
     }
   };
 
-  const renameTag = vscode.commands.registerCommand(
-    "file-tag.renameTag", renameTagHandler
-  );
-
-  const renameTagTree = vscode.commands.registerCommand(
-    "file-tag-tree.renameTag", renameTagHandler
-  );
-
-  const quickSwitch = vscode.commands.registerCommand('file-switch.quickSwitch', async () => {
+  const quickSwitch = async () => {
     try {
       const pairRegex = /^([a-zA-Z._-]+)(,([a-zA-Z._-]+))*\/([a-zA-Z._-]+)(,([a-zA-Z._-]+))*$/;
 
@@ -268,9 +246,9 @@ export function activate(context: vscode.ExtensionContext) {
     } catch (err) {
       console.log(err);
     }
-  });
+  };
 
-  const relatedFiles = vscode.commands.registerCommand('file-switch.relatedFiles', async () => {
+  const showOtherFilesInDirectory = async () => {
     try {
       const { currentFileName,
         directoryPath } = getCurrentFileInfo();
@@ -290,7 +268,7 @@ export function activate(context: vscode.ExtensionContext) {
       if (!filesToDisplay.length) return;
 
       const fileName = await vscode.window.showQuickPick(filesToDisplay, {
-        placeHolder: "Files in current directory:",
+        placeHolder: "Other files in current directory",
       });
 
       if (!fileName) return;
@@ -299,197 +277,209 @@ export function activate(context: vscode.ExtensionContext) {
     } catch (err) {
       console.log(err);
     }
-  });
+  };
 
-  const copyFileName = vscode.commands.registerTextEditorCommand(
-    'file-ops.copyFileName',
-    async () => {
-      try {
-        const { currentFileName } = getCurrentFileInfo();
-        writeDataToClipboard(currentFileName);
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
-  const copyFilePath = vscode.commands.registerTextEditorCommand(
-    'file-import.copyFilePath',
-    async () => {
-      try {
-        const filePath = getCurrentFilePath(false);
-        writeDataToClipboard(filePath);
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
-  const pasteFilePath = vscode.commands.registerTextEditorCommand(
-    'file-import.pasteFilePath',
-    async (editor) => {
-      try {
-        const targetFilePath = await readDataFromClipboard();
-
-        if (!fs.existsSync(targetFilePath))
-          return vscode.window.showErrorMessage(
-            `File Import: Invalid File Path`
-          );
-
-        const sourceFileObj = parseCurrentFilePath();
-        const userSettings = getModuleSettings('file-import');
-
-        const relativePath = path.relative(sourceFileObj.dir, targetFilePath);
-
-        // src & target file is same
-        if (sourceFileObj.base === relativePath)
-          return vscode.window.showErrorMessage(
-            `File Import: src & target file cannot be same`
-          );
-
-        const targetFileObj = path.parse(targetFilePath);
-
-        // No need for file extension when source & target have same extension
-        const addFileExtension = userSettings.addFileExtension && sourceFileObj.ext !== targetFileObj.ext;
-
-        let output = getBasePath({ filePath: relativePath, targetFileObj, addFileExtension });
-
-        if (process.platform === 'win32')
-          output = output.replaceAll('\\', '/'); // convert all `\` to `/` for windows os
-
-        if (!output.startsWith("../")) {
-          output = `./${output}`;
-        }
-
-        if (userSettings.addQuotes) {
-          output = `"${output}"`;
-        }
-
-        // insert `output` at current cursor position
-        editor.edit((editBuilder) =>
-          editBuilder.replace(editor.selection, output)
-        );
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
-  const saveGroup = vscode.commands.registerCommand(
-    "file-group.saveGroup",
-    async () => {
-      try {
-        const file = new File();
-        const name = await vscode.window.showInputBox({
-          placeHolder: "Group name",
-        });
-
-        const openFilePaths = vscode.workspace.textDocuments;
-
-        console.log({ visibleTextEditors: vscode.window.visibleTextEditors, activeTextEditor: vscode.window.activeTextEditor, textDocuments: vscode.workspace.textDocuments });
-        console.log('---------')
-        const filteredFilePaths = openFilePaths
-          .map((file) => {
-            console.log(file, file.fileName, cleanFilePath(file.fileName));
-            return cleanFilePath(file.fileName);
-          })
-          .filter((path) => !path.endsWith(".git"));
-
-        file.addGroup({
-          name: name || "Untitled group",
-          files: filteredFilePaths,
-        });
-
-        vscode.window.showInformationMessage(
-          `File Group: Group created`
-        );
-      } catch (err) {
-        console.log("Error: ", err);
-      }
+  const copyFileName = async () => {
+    try {
+      const { currentFileName } = getCurrentFileInfo();
+      writeDataToClipboard(currentFileName);
+    } catch (err) {
+      console.log(err);
     }
-  );
+  };
 
-  const loadGroup = vscode.commands.registerCommand(
-    "file-group.loadGroup",
-    async () => {
-      try {
-        const file = new File();
+  const copyFilePath = async () => {
+    try {
+      const filePath = getCurrentFilePath(false);
+      writeDataToClipboard(filePath);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-        const selectedIdx = await showPicker({ data: _.map(file.groups, 'name'), placeHolder: "Select group to load" });
+  const pasteFilePath = async (editor) => {
+    try {
+      const targetFilePath = await readDataFromClipboard();
 
-        if (isFalsy(selectedIdx)) return;
+      if (!fs.existsSync(targetFilePath))
+        return vscode.window.showErrorMessage(
+          `FileOps: Invalid File Path`
+        );
 
-        // await vscode.commands.executeCommand("workbench.action.closeAllEditors");
+      const sourceFileObj = parseCurrentFilePath();
+      const userSettings = getModuleSettings('file-import');
 
-        const fileList = file.groups[selectedIdx]['files'];
+      const relativePath = path.relative(sourceFileObj.dir, targetFilePath);
 
-        fileList.forEach(async (file: any) => {
-          openFile(file);
-        });
-      } catch (err) {
-        console.log(err);
+      // src & target file is same
+      if (sourceFileObj.base === relativePath)
+        return vscode.window.showErrorMessage(
+          `FileOps: 'src' & 'target' file cannot be same`
+        );
+
+      const targetFileObj = path.parse(targetFilePath);
+
+      // No need for file extension when source & target have same extension
+      const addFileExtension = userSettings.addFileExtension && sourceFileObj.ext !== targetFileObj.ext;
+
+      let output = getBasePath({ filePath: relativePath, targetFileObj, addFileExtension });
+
+      if (process.platform === 'win32')
+        output = output.replaceAll('\\', '/'); // convert all `\` to `/` for windows os
+
+      if (!output.startsWith("../")) {
+        output = `./${output}`;
       }
-    });
 
-  const toggleCase = vscode.commands.registerCommand(
-    "file-ops.toggleCase",
-    async () => {
-      try {
-        const CASES = [
-          { name: 'UPPERCASE', value: "UPPERCASE" },
-          { name: 'lowercase', value: "LOWERCASE" },
-          { name: 'kebab-case', value: "KEBABCASE" },
-          { name: 'snake_case', value: "SNAKECASE" },
-          { name: 'camelCase', value: "CAMELCASE" },
-          { name: 'Capitalize', value: "CAPITALIZE" },
-          { name: 'Trim & Replace spaces with underscore', value: "TRIM_AND_REPLACE_WITH_UNDERSCORE" },
-          { name: 'Remove spaces', value: "REMOVE_SPACES" },
-        ];
-
-        const selectedIdx = await showPicker({ data: _.map(CASES, 'name'), placeHolder: "Select case to convert to" });
-
-        updateSelectedText(text => switchCase(text, CASES[selectedIdx]['value']));
-      } catch (err) {
-        console.log(err);
+      if (userSettings.addQuotes) {
+        output = `"${output}"`;
       }
-    });
 
-  const stringify = vscode.commands.registerCommand(
-    "file-ops.stringify",
-    async () => {
-      try {
-        updateSelectedText(text => {
-          let result = text;
-          try {
-            const parsed = eval(`(${text})`);
-            // console.log('text::-', text);
-            // console.log('parsed::-', parsed, typeof parsed);
-            result = JSON.stringify(parsed);
-          } catch (err) {
-            vscode.window.showErrorMessage(`Selected range could not be stringified.`);
-          }
-          return result;
-        });
-      } catch (err) {
-        console.log(err);
-      }
-    });
+      // insert `output` at current cursor position
+      editor.edit((editBuilder) =>
+        editBuilder.replace(editor.selection, output)
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const saveGroup = async () => {
+    try {
+      const file = new File();
+      const name = await vscode.window.showInputBox({
+        placeHolder: "Enter Group Name",
+      });
+
+      const openFilePaths = vscode.workspace.textDocuments;
+
+      // console.log({ visibleTextEditors: vscode.window.visibleTextEditors, activeTextEditor: vscode.window.activeTextEditor, textDocuments: vscode.workspace.textDocuments });
+      const filteredFilePaths = openFilePaths
+        .map((file) => {
+          console.log(file, file.fileName, cleanFilePath(file.fileName));
+          return cleanFilePath(file.fileName);
+        })
+        .filter((path) => !path.endsWith(".git"));
+
+      file.addGroup({
+        name: name || "Untitled group",
+        files: filteredFilePaths,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const loadGroup = async () => {
+    try {
+      const file = new File();
+      const selectedIdx = await showPicker({ data: _.map(file.groups, 'name'), placeHolder: "Select file group to load" });
+
+      if (isFalsy(selectedIdx)) return;
+
+      // await vscode.commands.executeCommand("workbench.action.closeAllEditors");
+
+      const fileList = file.groups[selectedIdx]['files'];
+
+      fileList.forEach(async (file: any) => {
+        openFile(file);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const toggleCase = async () => {
+    try {
+      const CASES = [
+        { name: 'UPPERCASE', value: "UPPERCASE" },
+        { name: 'lowercase', value: "LOWERCASE" },
+        { name: 'kebab-case', value: "KEBABCASE" },
+        { name: 'snake_case', value: "SNAKECASE" },
+        { name: 'camelCase', value: "CAMELCASE" },
+        { name: 'Capitalize', value: "CAPITALIZE" },
+        { name: 'Trim & Replace spaces with underscore', value: "TRIM_AND_REPLACE_WITH_UNDERSCORE" },
+        { name: 'Remove spaces', value: "REMOVE_SPACES" },
+      ];
+
+      const selectedIdx = await showPicker({ data: _.map(CASES, 'name'), placeHolder: "Select case to convert to" });
+
+      updateSelectedText(text => switchCase(text, CASES[selectedIdx]['value']));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const stringify = async () => {
+    try {
+      updateSelectedText(text => {
+        let result = text;
+        try {
+          const parsed = eval(`(${text})`);
+          // console.log('text::-', text);
+          // console.log('parsed::-', parsed, typeof parsed);
+          result = JSON.stringify(parsed);
+        } catch (err) {
+          vscode.window.showErrorMessage(`FileOps: Selected range could not be stringified.`);
+        }
+        return result;
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   context.subscriptions.push(
-    createTag,
-    listTags,
-    currentTag,
-    deleteTags,
-    renameTag,
-    renameTagTree,
-    deleteTagsTree,
-    openTag,
-    quickSwitch,
-    relatedFiles,
-    copyFilePath,
-    pasteFilePath,
-    copyFileName,
-    saveGroup,
-    loadGroup,
-    toggleCase,
-    stringify
+    vscode.commands.registerCommand(
+      "bookmarks.createBookmark",
+      createBookmark
+    ),
+    vscode.commands.registerCommand(
+      "bookmarks.showBookmarks", showBookmarks),
+    vscode.commands.registerCommand(
+      "bookmarks.showCurrentBookmark", showCurrentBookmark),
+    vscode.commands.registerCommand(
+      "bookmarks.openBookmark", openBookmark),
+    vscode.commands.registerCommand(
+      "bookmarks.deleteBookmarks",
+      deleteBookmarkHandler
+    ),
+    vscode.commands.registerCommand(
+      "bookmarksTree.deleteBookmarks",
+      deleteBookmarkHandler
+    ),
+    vscode.commands.registerCommand(
+      "bookmarks.renameBookmark", renameBookmarkHandler
+    ),
+    vscode.commands.registerCommand(
+      "bookmarksTree.renameBookmark", renameBookmarkHandler
+    ),
+    vscode.commands.registerCommand('switch.quickSwitch', quickSwitch),
+    vscode.commands.registerCommand('switch.showOtherFilesInDirectory', showOtherFilesInDirectory),
+    vscode.commands.registerTextEditorCommand(
+      'fileOps.copyCurrentFileName',
+      copyFileName),
+    vscode.commands.registerTextEditorCommand(
+      'import.copyFilePath',
+      copyFilePath),
+    vscode.commands.registerTextEditorCommand(
+      'import.pasteRelativeFilePath',
+      pasteFilePath),
+    vscode.commands.registerCommand(
+      "group.saveFileGroup",
+      saveGroup
+    ),
+    vscode.commands.registerCommand(
+      "group.loadGroups",
+      loadGroup),
+    vscode.commands.registerCommand(
+      "fileOps.switchTextCasing",
+      toggleCase
+    ),
+    vscode.commands.registerCommand(
+      "fileOps.stringify",
+      stringify
+    )
   );
 }
 

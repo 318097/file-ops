@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import File from './File';
-import { parseTagData } from './helpers';
-export class FileTagProvider implements vscode.TreeDataProvider<TreeItem> {
+import { parseBookmarks } from './helpers';
+
+export class FileClipboardProvider implements vscode.TreeDataProvider<TreeItem> {
   file: File;
 
   constructor(private workspaceRoot: string) {
@@ -22,15 +23,10 @@ export class FileTagProvider implements vscode.TreeDataProvider<TreeItem> {
       return Promise.resolve([]);
     }
 
-    if (element) {
-      const item = new TreeItem(element.filePath, undefined, vscode.TreeItemCollapsibleState.None);
-      return Promise.resolve([item]);
-    } else {
-      const { entries } = parseTagData(this.file.tags);
-      // @ts-ignore
-      const tagList = entries.map(([filePath, { name }]) => new TreeItem(name, filePath, vscode.TreeItemCollapsibleState.Collapsed, true));
+    if (!element) {
+      const clipboardTreeItems = this.file.clipboardList.map(clipboardItem => new TreeItem(clipboardItem, vscode.TreeItemCollapsibleState.None));
 
-      return Promise.resolve(tagList);
+      return Promise.resolve(clipboardTreeItems);
     }
   }
 
@@ -46,23 +42,19 @@ export class FileTagProvider implements vscode.TreeDataProvider<TreeItem> {
 class TreeItem extends vscode.TreeItem {
   constructor(
     public readonly label: string,
-    public filePath: string | undefined,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-    public isRoot: boolean = false
   ) {
     super(label, collapsibleState);
-    this.filePath = this.filePath;
     this.tooltip = this.label;
-    this.isRoot = this.isRoot;
   }
 
   command = {
     title: 'open',
-    command: 'file-tag.openTag',
-    arguments: [this.filePath]
+    command: 'file-ops.copyToClipboard',
+    arguments: [this.label]
   };
 
-  contextValue = this.isRoot ? 'ROOT' : "CHILD";
+  // contextValue = this.isRoot ? 'ROOT' : "CHILD";
 
-  iconPath = new vscode.ThemeIcon(this.isRoot ? "tag" : "file");
+  // iconPath = new vscode.ThemeIcon(this.isRoot ? "tag" : "file");
 }

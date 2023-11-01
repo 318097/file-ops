@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 const _ = require('lodash');
 
-const getDefaultFileTagObj = (name: string) => ({
+const createBookmarkObj = (name: string) => ({
   name,
   createdAt: new Date().getTime(),
 });
@@ -13,7 +13,7 @@ const getWorkspacePath = () => {
   return workspaceBasePath;
 };
 
-const parseTagData = (data) => {
+const parseBookmarks = (data) => {
   const entries = Object.entries(data);
   // @ts-ignore
   const list = entries.map(([, { name }], index) => `${index + 1}. ${name}`);
@@ -191,12 +191,12 @@ const getFileShortName = () => {
 };
 
 export {
-  getDefaultFileTagObj,
+  createBookmarkObj,
   getWorkspacePath,
   getAbsolutePath,
   getCurrentFilePath,
   showDropdown,
-  parseTagData,
+  parseBookmarks,
   showPicker,
   cleanFilePath,
   openFile,

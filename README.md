@@ -1,16 +1,26 @@
 # File Ops
 
-> VS Code extension to import file path, tag/alias files & quick switch
+> VS Code extension to import, group, bookmark, quick switch files & more.
 
 ## Overview
 
-**1. File Import** - Paste relative path to other files
+**1. File Import** - Paste relative path to imported files
 
-**2. File Tag** - **Tag/Alias/Bookmark** files
+**2. Bookmarks** - Bookmark files & easily access them
 
 **3. Quick Switch** - Switch between file pairs. ex. switch between **.css** & **.js** from same folder using **`Ctrl/Cmd+E`**
 
-**4. Related Files (same folder)** - View files from the **current** directory & **switch**
+**4. Related Files from same folder** - View files (except current file & folders) from the **current** folder & **switch** to them
+
+**5. File Group** - Load/Save group of files
+
+**6. Copy File Name** - Copy current file name using the command `FileOps: Copy Current File Name`
+
+**7. Transform Text** - Hightlight & transform text using `FileOps: Text Transform`
+
+**8. Stringify Text** - Hightlight & JSON.stringify() text using `FileOps: JSON.stringify`
+
+**9. Toggle CaseSensitive & SearchWholeWord** - Toggle `CaseSensitive` & `SearchWholeWord` using the keyboard shortcut `Cmd+Option+E`
 
 [Watch Demo](https://youtu.be/ze9KtYe3f48)
 
@@ -18,16 +28,16 @@
 
 ### File Import
 
-1. `File Import: Copy Path`: Copy absolute path from command menu or right click
-2. `File Import: Paste Path`: Paste the relative path using command menu or right click
+1. `FileOps: Copy Current File Path`: Copy absolute path from command menu or right click
+2. `FileOps: Paste Relative File Path`: Paste the relative path using command menu or right click
 
 ![File Import Demo](assets/file-import-demo.gif)
 
-### File Tag
+### Bookmarks (Earlier File Tag)
 
 - Create file aliases. open & view files using the aliases
   1. Open, View, Edit, Delete file tags from the tree view, or
-  2. Perform operations using the commands. Search for `File Tag` to get all commands
+  2. Perform operations using the commands. Search for `FileOps` to get all commands
 
 > Note: All extension data is stored in an auto generated file called `.file-tag`  
 > Please do not make any changes to that file. If required, add it to `.gitignore`
@@ -50,35 +60,31 @@ Show all files (except active file) from current folder
 
 ![Related Files Demo](assets/related-files-demo.gif)
 
----
-
-## Commands
+<!-- ## Commands
 
 Run commands by opening Command Palette `Ctrl+Shift+P` / `Cmd+Shift+P`
 
 ![File Tag Commands](assets/file-tag-commands.png)
 
-![File Switch Commands](assets/file-switch-commands.png)
+![File Switch Commands](assets/file-switch-commands.png) -->
 
 ## Shortcuts
 
-| Feature                 | Shortcut                       | Description                                                                           |
-| ----------------------- | ------------------------------ | ------------------------------------------------------------------------------------- |
-| Quick Switch            | `Cmd+E` / `Ctrl+E`             | Switch between file pairs. ex., switch between `.css` & `.js` file using the shortcut |
-| Related Files           | `Cmd+Shift+E` / `Ctrl+Shift+E` | Show all files (except active file) from current folder                               |
-| File Import: Copy Path  | `Cmd+Shift+C` / `Ctrl+Shift+C` | Copy absolute path of active file                                                     |
-| File Import: Paste Path | `Cmd+Shift+V` / `Ctrl+Shift+V` | Paste relative path to the `copied file`                                              |
+| Feature                                                 | Shortcut                       | Description                                                                           |
+| ------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------- |
+| FileOps (Switch): Quick Switch                          | `Cmd+E` / `Ctrl+E`             | Switch between file pairs. ex., switch between `.css` & `.js` file using the shortcut |
+| FileOps (Switch): Show Other Files in Current Directory | `Cmd+Shift+E` / `Ctrl+Shift+E` | Show all files (except active file) from current folder                               |
+| FileOps (Import): Copy Current File Path                | `Cmd+Shift+C` / `Ctrl+Shift+C` | Copy absolute path of current file                                                    |
+| FileOps (Import): Paste Relative File Path              | `Cmd+Shift+V` / `Ctrl+Shift+V` | Paste relative path to the `copied file`                                              |
 
 ## Settings
 
-| Setting                             | Default value                                          | Description                                                                                                                                                                                                                            |
-| ----------------------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| fileOps.fileSwitch.quickSwitchPairs | `[".js,.ts/.css,.sass,.scss", ".js/.js", ".json/.md"]` | Define file pairs to enable switch between them.ex., `[".json/.md"]`) will enable switching between `.json` & `.md` using `Quick Switch` shortcut. Accepted regex for a pair: `/^(\.[a-z]+)(,(\.[a-z]+))*\/(\.[a-z]+)(,(\.[a-z]+))*$/` |
-| fileOps.fileSwitch.excludeFiles     | `["index.js"]`                                         | File names to be excluded from quick switch                                                                                                                                                                                            |
-| fileOps.fileImport.addQuotes        | `true`                                                 | Wrap the relative path in double quotes                                                                                                                                                                                                |
-| fileOps.fileImport.addFileExtension | `true`                                                 | Retain the file extension of relative path                                                                                                                                                                                             |
-
----
+| Setting                             | Default value                                          | Description                                                                                                              |
+| ----------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| fileOps.fileSwitch.quickSwitchPairs | `[".js,.ts/.css,.sass,.scss", ".js/.js", ".json/.md"]` | Define file pairs to enable switch between them.ex., `[".json/.md"]` will enable switching between `.json` & `.md` files |
+| fileOps.fileSwitch.excludeFiles     | `["index.js"]`                                         | File names to be excluded from quick switch                                                                              |
+| fileOps.fileImport.addQuotes        | `false`                                                | Wrap the relative path in double quotes                                                                                  |
+| fileOps.fileImport.addFileExtension | `true`                                                 | Retain the file extension of relative path                                                                               |
 
 ## Other projects
 
