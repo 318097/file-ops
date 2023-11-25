@@ -2,7 +2,7 @@
 
 <!-- Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file. -->
 
-#### v3.0 (13 Oct, 23)
+#### v3.0 (25 Nov, 23)
 
 - Feat: Copy Current Filename
 - Feat: File Groups
