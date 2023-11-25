@@ -379,7 +379,7 @@ export function activate(context: vscode.ExtensionContext) {
 
       // await vscode.commands.executeCommand("workbench.action.closeAllEditors");
 
-      const fileList = file.groups[selectedIdx]['files'];
+      const fileList = file.groups[Number(selectedIdx)]['files'];
 
       fileList.forEach(async (file: any) => {
         openFile(file);
@@ -404,7 +404,7 @@ export function activate(context: vscode.ExtensionContext) {
 
       const selectedIdx = await showPicker({ data: _.map(CASES, 'name'), placeHolder: "Select case to convert to" });
 
-      updateSelectedText(text => switchCase(text, CASES[selectedIdx]['value']));
+      updateSelectedText(text => switchCase(text, CASES[Number(selectedIdx)]['value']));
     } catch (err) {
       console.log(err);
     }

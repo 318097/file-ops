@@ -7,7 +7,7 @@ export default class File {
   empty: boolean = false;
   tags: any = {};
   groups: any = [];
-  // clipboardList: any = ['aaa', 'bbb', 'ccc'];
+  clipboardList: any = [];
 
   constructor() {
     this.setFilePath();
