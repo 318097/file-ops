@@ -1,10 +1,10 @@
 {
 	"name": "file-ops",
-	"displayName": "File Ops",
-	"description": "VS Code extension to import file path, tag/alias files & quick switch",
-	"version": "2.0.1",
+	"displayName": "FileOps",
+	"description": "VS Code extension to import, group, bookmark, quick switch files, text transformations & keyboard shortcuts.",
+	"version": "3.0.0",
 	"engines": {
-		"vscode": "^1.53.0"
+		"vscode": "^1.75.0"
 	},
 	"publisher": "mehullakhanpal",
 	"repository": {
@@ -14,182 +14,181 @@
 	"categories": [
 		"Other"
 	],
-	"author": "Mehul Lakhanpal <mehullakhanpal@gmail.com> (https://www.codedrops.tech)",
+	"author": "Mehul Lakhanpal <mehullakhanpal@gmail.com> (https://www.mehullakhanpal.netlify.app)",
 	"icon": "icons/icon.png",
 	"keywords": [
 		"productivity",
-		"vs-code",
 		"switch-files",
 		"file-operations",
 		"bookmark",
 		"alias",
 		"file-shortcuts",
 		"import-file",
-		"relative-path"
+		"relative-path",
+		"text-transformations"
 	],
 	"activationEvents": [
-		"onCommand:file-tag.createTag",
-		"onCommand:file-tag.listTags",
-		"onCommand:file-tag.currentTag",
-		"onCommand:file-tag.renameTag",
-		"onCommand:file-tag.deleteTags",
-		"onCommand:file-tag.openTag",
-		"onView:file-tag-tree",
-		"onCommand:file-switch.relatedFiles",
-		"onCommand:file-switch.quickSwitch",
-		"onCommand:file-import.pasteFilePath",
-		"onCommand:file-import.copyFilePath",
-		"onCommand:file-ops.copyFileName",
-		"onCommand:file-group.saveGroup",
-		"onCommand:file-group.loadGroup",
-		"onCommand:file-ops.toggleCase",
-		"onCommand:file-ops.stringify"
+		"onCommand:bookmarks.openBookmark"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"viewsWelcome": [
 			{
-				"view": "file-tag-tree",
-				"contents": "No Tagged Files.\nStart tagging files by going to 'Command Palette' and running the command 'File Tag: Create Tag'"
+				"view": "bookmarksTree",
+				"contents": "No bookmarks.\nCreate bookmark by running 'FileOps (Bookmarks): Create Bookmark'"
 			}
 		],
 		"menus": {
 			"view/title": [
 				{
-					"command": "file-tag-tree.refreshData",
-					"when": "view == file-tag-tree",
+					"command": "bookmarksTree.refreshData",
+					"when": "view == bookmarksTree",
 					"group": "navigation"
 				}
 			],
 			"view/item/context": [
 				{
-					"command": "file-tag-tree.renameTag",
-					"when": "view == file-tag-tree && viewItem == ROOT",
+					"command": "bookmarksTree.renameBookmark",
+					"when": "view == bookmarksTree && viewItem == ROOT",
 					"group": "inline@1"
 				},
 				{
-					"command": "file-tag-tree.deleteTags",
-					"when": "view == file-tag-tree && viewItem == ROOT",
+					"command": "bookmarksTree.deleteBookmarks",
+					"when": "view == bookmarksTree && viewItem == ROOT",
 					"group": "inline@2"
 				}
 			],
 			"editor/context": [
 				{
-					"command": "file-ops.copyFileName",
+					"command": "fileOps.copyCurrentFileName",
 					"group": "9_cutcopypaste"
 				},
 				{
-					"command": "file-import.copyFilePath",
+					"command": "import.copyFilePath",
 					"group": "9_cutcopypaste"
 				},
 				{
-					"command": "file-import.pasteFilePath",
+					"command": "import.pasteRelativeFilePath",
 					"group": "9_cutcopypaste"
 				}
 			]
 		},
 		"commands": [
 			{
-				"command": "file-tag.createTag",
-				"title": "File Tag: Create Tag"
+				"command": "bookmarks.showBookmarks",
+				"title": "Show Bookmarks",
+				"category": "FileOps (Bookmarks)"
 			},
 			{
-				"command": "file-tag.listTags",
-				"title": "File Tag: List Tags"
+				"command": "bookmarks.createBookmark",
+				"title": "Create Bookmark",
+				"category": "FileOps (Bookmarks)"
 			},
 			{
-				"command": "file-tag.currentTag",
-				"title": "File Tag: Show current File Tag"
+				"command": "bookmarks.showCurrentBookmark",
+				"title": "Show Bookmark Name",
+				"category": "FileOps (Bookmarks)"
 			},
 			{
-				"command": "file-tag.renameTag",
-				"title": "File Tag: Rename Tag"
+				"command": "bookmarks.renameBookmark",
+				"title": "Rename Bookmark",
+				"category": "FileOps (Bookmarks)"
 			},
 			{
-				"command": "file-tag.deleteTags",
-				"title": "File Tag: Delete Tags"
+				"command": "bookmarks.deleteBookmarks",
+				"title": "Delete Bookmark",
+				"category": "FileOps (Bookmarks)"
 			},
 			{
-				"command": "file-tag-tree.refreshData",
+				"command": "bookmarksTree.refreshData",
 				"title": "Refresh",
 				"icon": "$(refresh)"
 			},
 			{
-				"command": "file-tag-tree.renameTag",
+				"command": "bookmarksTree.renameBookmark",
 				"title": "Edit",
 				"icon": "$(edit)"
 			},
 			{
-				"command": "file-tag-tree.deleteTags",
+				"command": "bookmarksTree.deleteBookmarks",
 				"title": "Delete",
 				"icon": "$(trash)"
 			},
 			{
-				"command": "file-switch.quickSwitch",
-				"title": "File Switch: Quick Switch"
+				"command": "group.saveFileGroup",
+				"title": "Save File Group",
+				"category": "FileOps (Groups)"
 			},
 			{
-				"command": "file-switch.relatedFiles",
-				"title": "File Switch: Related Files"
+				"command": "group.loadGroups",
+				"title": "Load File Groups",
+				"category": "FileOps (Groups)"
 			},
 			{
-				"command": "file-import.copyFilePath",
-				"title": "File Import: Copy Path"
+				"command": "switch.quickSwitch",
+				"title": "Quick Switch",
+				"category": "FileOps (Switch)"
 			},
 			{
-				"command": "file-import.pasteFilePath",
-				"title": "File Import: Paste Path"
+				"command": "switch.showOtherFilesInDirectory",
+				"title": "Show Other Files in Current Directory",
+				"category": "FileOps (Switch)"
 			},
 			{
-				"command": "file-ops.copyFileName",
-				"title": "File Ops: Copy File Name"
+				"command": "import.copyFilePath",
+				"title": "Copy Current File Path",
+				"category": "FileOps (Import)"
 			},
 			{
-				"command": "file-group.saveGroup",
-				"title": "File Group: Save"
+				"command": "import.pasteRelativeFilePath",
+				"title": "Paste Relative File Path",
+				"category": "FileOps (Import)"
 			},
 			{
-				"command": "file-group.loadGroup",
-				"title": "File Group: Load"
+				"command": "fileOps.copyCurrentFileName",
+				"title": "Copy Current File Name",
+				"category": "FileOps"
 			},
 			{
-				"command": "file-ops.toggleCase",
-				"title": "File Ops: Toggle Case"
+				"command": "fileOps.switchTextCasing",
+				"title": "Text Transform",
+				"category": "FileOps"
 			},
 			{
-				"command": "file-ops.stringify",
-				"title": "File Ops: JSON.stringify"
+				"command": "fileOps.stringify",
+				"title": "JSON.stringify",
+				"category": "FileOps"
 			}
 		],
 		"views": {
 			"explorer": [
 				{
-					"id": "file-tag-tree",
-					"name": "File Tag"
+					"id": "bookmarksTree",
+					"name": "FileOps: Bookmarks"
 				}
 			]
 		},
 		"keybindings": [
 			{
-				"command": "file-switch.quickSwitch",
+				"command": "switch.quickSwitch",
 				"key": "ctrl+e",
 				"mac": "cmd+e",
 				"when": "editorTextFocus"
 			},
 			{
-				"command": "file-switch.relatedFiles",
+				"command": "switch.showOtherFilesInDirectory",
 				"key": "ctrl+shift+e",
 				"mac": "cmd+shift+e",
 				"when": "editorTextFocus"
 			},
 			{
-				"command": "file-import.copyFilePath",
+				"command": "import.copyFilePath",
 				"key": "ctrl+shift+c",
 				"mac": "cmd+shift+c",
 				"when": "editorTextFocus"
 			},
 			{
-				"command": "file-import.pasteFilePath",
+				"command": "import.pasteRelativeFilePath",
 				"key": "ctrl+shift+v",
 				"mac": "cmd+shift+v",
 				"when": "editorTextFocus && resourceExtname != .md"
@@ -241,12 +240,12 @@
 				"fileOps.fileImport.addQuotes": {
 					"type": "boolean",
 					"default": false,
-					"description": "Add quotes for 'File Import: Paste Path'"
+					"description": "Add quotes for 'FileOps (Import): Paste Relative File Path'"
 				},
 				"fileOps.fileImport.addFileExtension": {
 					"type": "boolean",
 					"default": true,
-					"description": "Add file extension for 'File Import: Paste Path'"
+					"description": "Add file extension for 'FileOps (Import): Paste Relative File Path'"
 				}
 			}
 		}
