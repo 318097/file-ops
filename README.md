@@ -1,6 +1,6 @@
 # File Ops
 
-> VS Code extension to import, group, bookmark, quick switch files & more.
+> VS Code extension to import, group, bookmark, quick switch files, text transformations & keyboard shortcuts.
 
 ## Overview
 
@@ -10,7 +10,7 @@
 
 **3. Quick Switch** - Switch between file pairs. ex. switch between **.css** & **.js** from same folder using **`Ctrl/Cmd+E`**
 
-**4. Related Files from same folder** - View files (except current file & folders) from the **current** folder & **switch** to them
+**4. Related Files From Same Folder** - View files (except current file & folders) from the **current** folder & **switch** to them
 
 **5. File Group** - Load/Save group of files
 
@@ -22,27 +22,27 @@
 
 **9. Toggle CaseSensitive & SearchWholeWord** - Toggle `CaseSensitive` & `SearchWholeWord` using the keyboard shortcut `Cmd+Option+E`
 
-[Watch Demo](https://youtu.be/ze9KtYe3f48)
+<!-- [Watch Demo](https://youtu.be/ze9KtYe3f48) -->
+
+> Note: All extension data is stored in an auto generated file called `.file-tag`  
+> Please do not make any changes to that file. If required, add it to `.gitignore`
 
 ## Features
 
 ### File Import
 
-1. `FileOps: Copy Current File Path`: Copy absolute path from command menu or right click
-2. `FileOps: Paste Relative File Path`: Paste the relative path using command menu or right click
+1. `FileOps (Import): Copy Current File Path`: Copy absolute path from command palette, context menu or use the shortcut `Cmd/Ctrl+Shift+C`
+2. `FileOps (Import): Paste Relative File Path`: Paste the relative path using command palette, context menu or use the shortcut `Cmd/Ctrl+Shift+V`
 
-![File Import Demo](assets/file-import-demo.gif)
+![File Import Demo](assets/v3/file-import-demo.gif)
 
 ### Bookmarks (Earlier File Tag)
 
-- Create file aliases. open & view files using the aliases
-  1. Open, View, Edit, Delete file tags from the tree view, or
-  2. Perform operations using the commands. Search for `FileOps` to get all commands
+- Create file bookmarks. open & view files using the bookmarks
+  1. Open, View, Edit, Delete file bookmarks from the tree view, or
+  2. Perform operations using the commands. Search for `FileOps (Bookmarks)` to get all commands
 
-> Note: All extension data is stored in an auto generated file called `.file-tag`  
-> Please do not make any changes to that file. If required, add it to `.gitignore`
-
-![File Tag Demo](assets/file-tag-demo.gif)
+![File Tag Demo](assets/v3/file-tag-demo.gif)
 
 ### Quick Switch
 
@@ -52,21 +52,68 @@ _Define custom pairs using the exposed setting (fileOps.fileSwitch.excludeFiles)
 
 **Note**: By default, `index.js` file is excluded so it wont be considered for switching
 
-![Quick Switch Demo](assets/quick-switch-demo.gif)
+##### Example 1 - Switching between `.scss` & `js` file from same folder using the shortcut `Cmd/Ctrl+E`
 
-### Related Files
+![Quick Switch Demo](assets/v3/quick-switch-demo.gif)
 
-Show all files (except active file) from current folder
+##### Example 2 - Switching between custom files `liquid.scss` & `globals.scss` from same folder using the shortcut `Cmd/Ctrl+E`. Defined setting:
 
-![Related Files Demo](assets/related-files-demo.gif)
+```json
+{
+  ...
+  "fileOps.fileSwitch.quickSwitchPairs": ["globals.scss/liquid.scss"]
+}
+```
 
-<!-- ## Commands
+![Quick Switch Custom Files Demo](assets/v3/quick-switch-custom-files-demo.gif)
 
-Run commands by opening Command Palette `Ctrl+Shift+P` / `Cmd+Shift+P`
+### Related Files From Same Folder
 
-![File Tag Commands](assets/file-tag-commands.png)
+Show all files (except active file) from current folder using the shortcut `Cmd/Ctrl+Shift+E`
 
-![File Switch Commands](assets/file-switch-commands.png) -->
+![Related Files Demo](assets/v3/related-files-demo.gif)
+
+### File Group
+
+- Save a group of files using `FileOps (Groups): Save File Group`
+- Load the saved group of files using `FileOps (Groups): Load File Groups`
+
+![File Groups Demo](assets/v3/file-group-demo.gif)
+
+### Copy File Name
+
+Copy current file name using the command `FileOps: Copy Current File Name` or from context menu
+
+![Copy Current File Name Demo](assets/v3/copy-file-name-demo.gif)
+
+### Transform Text
+
+Highlight text and perform the following text transformations using the command `FileOps: Text Transform`
+
+- UPPERCASE
+- lowercase
+- kebab-case
+- snake_case
+- camelCase
+- Capitalize
+- Trim & Replace spaces with underscore
+- Remove spaces
+
+![Text Tranformation Demo](assets/v3/text-transform-demo.gif)
+
+### Stringify Text
+
+Highlight & JSON.stringify the text.
+
+> Note: It will cause an error if the highlighted text contains extra characters. Highlight the exact text which can be stringified if passed to JSON.stringify() method.
+
+![Stringify Text Demo](assets/v3/json-stringify-demo.gif)
+
+### Toggle CaseSensitive & SearchWholeWord
+
+Quickly toggle the CaseSensitive & SearchWholeWord using the keyboard shortcut `Cmd/Ctrl+Option/Alt+E`
+
+![Toggle Find Demo](assets/v3/toggle-find-demo.gif)
 
 ## Shortcuts
 
@@ -90,11 +137,7 @@ Run commands by opening Command Palette `Ctrl+Shift+P` / `Cmd+Shift+P`
 
 1. [Dev Box](https://chrome.google.com/webstore/detail/devbox/moifkpmfincoglpljkonmgnfaeonlgmo?utm_source=file_ops&utm_medium=readme) - A UI for local storage
 2. [Array Builder](https://www.arraybuilder.com?utm_source=file_ops&utm_medium=readme) - A free tool to visualize the output of array operations
-3. [Fireboard](https://web.fireboardapp.com/?utm_source=file_ops&utm_medium=readme) - A work tracker for software developers
-4. [Codedrops](https://codedrops.netlify.app/?utm_source=file_ops&utm_medium=readme) - Micro-blogging on Web development
-5. [Octon](https://octon.netlify.com/?utm_source=file_ops&utm_medium=readme) - Manage expenses, todos, goals, progress & personal timeline
-6. [Note Box](https://chrome.google.com/webstore/detail/note-box/mbbajjgefpenmkkhcnmmnoodlbcbfnmp?utm_source=file_ops&utm_medium=readme) - A chrome extension to add notes/todos based on URL
-7. [Github Marker](https://chrome.google.com/webstore/detail/github-marker/imjdbnnpnohgcdbpgnidgolnamoghpoo?utm_source=file_ops&utm_medium=readme) - A chrome extension to Favorite, Bookmark & Mark link as Read in Github
+3. [Code404](https://www.code404.co/?utm_source=file_ops&utm_medium=readme) - Micro-blogging on Web development
 
 ## Support
 

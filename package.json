@@ -1,7 +1,7 @@
 {
 	"name": "file-ops",
 	"displayName": "FileOps",
-	"description": "Bookmark files, File groups, Quick switch files, Import file, Text transformations, Keyboard shortcuts",
+	"description": "VS Code extension to import, group, bookmark, quick switch files, text transformations & keyboard shortcuts.",
 	"version": "3.0.0",
 	"engines": {
 		"vscode": "^1.75.0"
@@ -18,14 +18,14 @@
 	"icon": "icons/icon.png",
 	"keywords": [
 		"productivity",
-		"vs-code",
 		"switch-files",
 		"file-operations",
 		"bookmark",
 		"alias",
 		"file-shortcuts",
 		"import-file",
-		"relative-path"
+		"relative-path",
+		"text-transformations"
 	],
 	"activationEvents": [
 		"onCommand:bookmarks.openBookmark"
